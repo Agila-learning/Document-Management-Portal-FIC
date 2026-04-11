@@ -1,0 +1,147 @@
+.settings-wrapper {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.settings-nav {
+  height: fit-content;
+}
+
+.settings-tab-btn {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.85rem 1rem;
+  border-radius: 10px;
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #64748b;
+  border: 1px solid transparent;
+  background: transparent;
+  transition: var(--transition);
+  text-align: left;
+  margin-bottom: 2px;
+}
+
+.settings-tab-btn:hover {
+  background-color: #f8fafc;
+  color: var(--navy);
+}
+
+.settings-tab-btn.active {
+  background-color: var(--primary-color);
+  color: white;
+  box-shadow: var(--shadow-brand);
+}
+
+.settings-tab-btn.active .btn-icon {
+  color: white;
+}
+
+.btn-icon {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  transition: var(--transition);
+}
+
+/* Storage Telemetry */
+.storage-telemetry {
+  background-color: var(--primary-light);
+  border-color: rgba(37, 99, 235, 0.1);
+}
+
+.telemetry-title {
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.telemetry-bar-wrap {
+  height: 6px;
+  background-color: white;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.telemetry-bar-fill {
+  height: 100%;
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+.telemetry-info {
+  font-size: 9px;
+  font-weight: 800;
+  color: var(--primary-color);
+  font-style: italic;
+  opacity: 0.7;
+}
+
+/* Profile Section */
+.profile-avatar-circle {
+  width: 80px;
+  height: 80px;
+  background-color: var(--primary-color);
+  color: white;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  font-weight: 900;
+  box-shadow: 0 10px 20px rgba(37, 99, 235, 0.2);
+}
+
+.role-tag {
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  color: var(--primary-color);
+  background-color: var(--primary-light);
+  padding: 0.35rem 0.65rem;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+}
+
+.input-with-icon {
+  position: relative;
+}
+
+.icon-field {
+  position: absolute;
+  left: 14px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+}
+
+.input-with-icon input {
+  padding-left: 2.75rem;
+}
+
+.disabled-field {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Appearance Section */
+.appearance-icon-box {
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  font-size: 1.25rem;
+  color: var(--primary-color);
+}
+
+.extra-small {
+  font-size: 9px;
+}
+
+.max-w-sm {
+  max-width: 400px;
+}
+
+.pointer-cursor {
+  cursor: pointer;
+}

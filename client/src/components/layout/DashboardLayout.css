@@ -1,0 +1,42 @@
+.layout-wrapper {
+  background-color: var(--brand-bg);
+  position: relative;
+  overflow-x: hidden;
+}
+
+.main-viewport {
+  transition: all 0.3s ease;
+  width: 100%;
+}
+
+/* Offset main content by sidebar width on desktop */
+@media (min-width: 992px) {
+  .main-viewport {
+    margin-left: 240px;
+    width: calc(100% - 240px);
+  }
+}
+
+.main-content {
+  flex: 1;
+}
+
+.content-inner {
+  max-width: 1440px;
+  width: 100%;
+}
+
+/* Mobile Sidebar Overlay */
+.sidebar-overlay {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 90;
+  animation: fadeInOverlay 0.3s ease-out;
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}

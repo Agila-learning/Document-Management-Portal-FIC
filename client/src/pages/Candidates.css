@@ -1,0 +1,22 @@
+.candidates-wrapper {
+  animation: fadeIn 0.4s ease-out;
+}
+
+.candidate-header-icon-box {
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  background-color: var(--card-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+}
+
+.candidate-control-bar {
+  background-color: var(--card-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 16px;
+}

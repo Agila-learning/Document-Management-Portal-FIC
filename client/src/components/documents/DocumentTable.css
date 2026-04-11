@@ -1,0 +1,125 @@
+.table-enterprise {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.table-enterprise thead {
+  background-color: var(--brand-bg);
+}
+
+.table-enterprise th {
+  font-size: 11px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+  border-bottom: 1px solid var(--brand-border);
+  white-space: nowrap;
+}
+
+.table-enterprise tr {
+  transition: var(--transition);
+}
+
+.table-enterprise tbody tr:hover {
+  background-color: var(--input-bg);
+}
+
+.doc-type-icon {
+  width: 40px;
+  height: 40px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  transition: var(--transition);
+}
+
+tr:hover .doc-type-icon {
+  transform: scale(1.1);
+  border-color: var(--primary-color);
+}
+
+.doc-title-row {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 800;
+  color: var(--navy);
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-ext-row {
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #94a3b8;
+}
+
+.category-tag {
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--text-secondary);
+  background-color: var(--input-bg);
+  padding: 0.4rem 0.75rem;
+  border-radius: 8px;
+  border: 1px solid var(--brand-border);
+}
+
+/* Status Badges */
+.status-badge {
+  font-size: 9px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 0.35rem 0.65rem;
+  border-radius: 6px;
+  border: 1px solid transparent;
+}
+
+.badge-active { background-color: rgba(5, 150, 105, 0.1); color: #059669; border-color: rgba(5, 150, 105, 0.2); }
+.badge-verified { background-color: rgba(37, 99, 235, 0.1); color: #2563eb; border-color: rgba(37, 99, 235, 0.2); }
+.badge-archived { background-color: rgba(124, 58, 237, 0.1); color: #7c3aed; border-color: rgba(124, 58, 237, 0.2); }
+.badge-pending { background-color: rgba(217, 119, 6, 0.1); color: #d97706; border-color: rgba(217, 119, 6, 0.2); }
+.badge-expiring { background-color: rgba(220, 38, 38, 0.1); color: #dc2626; border-color: rgba(220, 38, 38, 0.2); }
+
+/* Action Hub */
+.action-hub {
+  opacity: 0;
+  transition: var(--transition);
+}
+
+tr:hover .action-hub {
+  opacity: 1;
+}
+
+.btn-action-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background-color: var(--input-bg);
+  border: 1px solid var(--brand-border);
+  color: #94a3b8;
+  transition: var(--transition);
+  padding: 0;
+}
+
+.btn-action-icon:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.btn-action-icon.preview:hover { color: var(--primary-color); border-color: var(--primary-color); }
+.btn-action-icon.download:hover { color: #6366f1; border-color: #6366f1; }
+.btn-action-icon.edit:hover { color: #f59e0b; border-color: #f59e0b; }
+.btn-action-icon.delete:hover { color: #ef4444; border-color: #ef4444; }

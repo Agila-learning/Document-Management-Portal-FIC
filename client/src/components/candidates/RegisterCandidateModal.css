@@ -1,0 +1,13 @@
+.rc-modal-content {
+  max-width: 680px;
+}
+
+.rc-error-banner {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+}

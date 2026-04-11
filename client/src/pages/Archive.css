@@ -1,0 +1,102 @@
+.archive-wrapper {
+  color: var(--text-primary);
+}
+
+.archive-header-icon-box {
+  width: 56px;
+  height: 56px;
+  background: var(--card-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  color: var(--primary-color);
+  box-shadow: var(--shadow-enterprise);
+}
+
+.archive-control-area {
+  background: transparent;
+}
+
+.archive-info-strip {
+  background: var(--card-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  box-shadow: var(--shadow-enterprise);
+}
+
+.strip-icon {
+  width: 40px;
+  height: 40px;
+  background: var(--primary-light);
+  color: var(--primary-color);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.125rem;
+  flex-shrink: 0;
+}
+
+.strip-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--navy);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 2px;
+}
+
+.strip-text p {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  margin: 0;
+}
+
+.search-box-pill {
+  position: relative;
+  height: 100%;
+}
+
+.search-pill-icon {
+  position: absolute;
+  left: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-secondary);
+  font-size: 1.125rem;
+  z-index: 10;
+}
+
+.search-pill-input {
+  width: 100%;
+  height: 56px;
+  background: var(--card-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 28px;
+  padding: 0 1.5rem 0 3.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--navy);
+  box-shadow: var(--shadow-enterprise);
+  transition: var(--transition);
+  outline: none;
+}
+
+.search-pill-input:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 4px var(--primary-light);
+  background: var(--card-bg);
+}
+
+.table-container {
+  border-radius: 16px;
+}

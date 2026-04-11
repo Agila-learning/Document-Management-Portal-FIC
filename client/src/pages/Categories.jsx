@@ -1,0 +1,195 @@
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  FiFolder, FiChevronRight, FiPlus, FiSearch, 
+  FiFilter, FiArrowUp, FiArrowDown, FiMoreVertical 
+} from 'react-icons/fi';
+import api from '../utils/api';
+import EmptyState from '../components/common/EmptyState';
+import './Categories.css';
+
+const Categories = () => {
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [sortBy, setSortBy] = useState('name'); // 'name', 'count'
+  const [sortOrder, setSortOrder] = useState('asc');
+  const navigate = useNavigate();
+
+  // Master list of categories (In a real app, this would come from a Category model)
+  const [categoryList, setCategoryList] = useState([
+    { id: 1, name: 'MOU', description: 'Memorandums of Understanding and agreements.' },
+    { id: 2, name: 'NOC', description: 'No Objection Certificates and clearances.' },
+    { id: 3, name: 'SLA', description: 'Service Level Agreements for clients.' },
+    { id: 4, name: 'Candidate', description: 'Personal onboarding and KYC files.' },
+    { id: 5, name: 'Offer Letters', description: 'Employment and recruitment records.' },
+    { id: 6, name: 'Posters', description: 'Visual assets and event graphics.' },
+    { id: 7, name: 'Legal', description: 'Court documents and legal contracts.' },
+    { id: 8, name: 'HR', description: 'Personnel management and internal files.' },
+    { id: 9, name: 'Client', description: 'Project specific client documentation.' },
+    { id: 10, name: 'Miscellaneous', description: 'General files and uncategorized media.' }
+  ]);
+
+  useEffect(() => {
+    const fetchCategoryStats = async () => {
+      try {
+        const { data } = await api.get('/stats/dashboard');
+        setCategories(data.categoryStats || []);
+      } catch (error) {
+        console.error('Error fetching category stats:', error);
+      } finally {
+        setTimeout(() => setLoading(false), 600);
+      }
+    };
+    fetchCategoryStats();
+  }, []);
+
+  const handleCategoryClick = (category) => {
+    navigate(`/documents?category=${encodeURIComponent(category)}`);
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
+  };
+
+  // Filter and Sort Logic
+  const filteredAndSorted = categoryList
+    .filter(cat => 
+      cat.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+      cat.description.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      if (sortBy === 'name') {
+        return sortOrder === 'asc' 
+          ? a.name.localeCompare(b.name) 
+          : b.name.localeCompare(a.name);
+      } else if (sortBy === 'count') {
+        const countA = categories.find(c => c._id === a.name)?.count || 0;
+        const countB = categories.find(c => c._id === b.name)?.count || 0;
+        return sortOrder === 'asc' ? countA - countB : countB - countA;
+      }
+      return 0;
+    });
+
+  return (
+    <div className="categories-page-wrapper animate-fade">
+      {/* Premium Header */}
+      <div className="categories-header-section mb-5">
+        <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4">
+          <div className="header-meta">
+            <h1 className="display-6 font-manrope font-extrabold text-navy mb-1">Document Categories</h1>
+            <p className="text-secondary font-medium m-0">Organize and manage your document library folders</p>
+          </div>
+          <div className="header-actions d-flex gap-3">
+            <button className="btn btn-navy-custom d-flex align-items-center gap-2 px-4 shadow-sm">
+              <FiPlus /> <span>New Category</span>
+            </button>
+            <button className="btn btn-primary-custom d-flex align-items-center gap-2 px-4 shadow-brand">
+              <FiFolder /> <span>Quick Upload</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Control Bar: Search & Sort */}
+      <div className="categories-control-bar card-enterprise p-3 mb-5">
+        <div className="row g-3 align-items-center">
+          <div className="col-12 col-md-5 col-lg-4">
+            <div className="search-pill-box">
+              <FiSearch className="search-pill-icon" />
+              <input 
+                type="text" 
+                placeholder="Search categories..." 
+                className="search-pill-input"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="col-12 col-md-7 col-lg-8">
+            <div className="d-flex align-items-center justify-content-md-end gap-3">
+              <div className="sort-control d-flex align-items-center gap-2">
+                <FiFilter className="text-secondary" />
+                <span className="small font-bold text-secondary text-uppercase tracking-wider">Sort By:</span>
+                <select 
+                  className="form-select-custom" 
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                >
+                  <option value="name">Category Name</option>
+                  <option value="count">File Count</option>
+                  <option value="recent">Recently Updated</option>
+                </select>
+                <button className="btn-sort-toggle" onClick={toggleSortOrder}>
+                  {sortOrder === 'asc' ? <FiArrowUp /> : <FiArrowDown />}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {loading ? (
+        <div className="categories-premium-grid">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="category-skeleton-card animate-pulse" />
+          ))}
+        </div>
+      ) : filteredAndSorted.length > 0 ? (
+        <div className="categories-premium-grid">
+          {filteredAndSorted.map((cat, idx) => {
+            const stats = categories.find(c => c._id === cat.name);
+            const docCount = stats ? stats.count : 0;
+
+            return (
+              <div 
+                key={cat.id} 
+                className="category-premium-card"
+                style={{ '--delay': `${idx * 0.05}s` }}
+              >
+                <div className="card-inner">
+                  <div className="card-head">
+                    <div className="icon-box">
+                      <FiFolder />
+                    </div>
+                    <button className="btn-more-options">
+                      <FiMoreVertical />
+                    </button>
+                  </div>
+                  
+                  <div className="card-body-content">
+                    <div className="d-flex align-items-center justify-content-between mb-2">
+                      <h3 className="category-title">{cat.name}</h3>
+                      <span className="file-pill">{docCount} Files</span>
+                    </div>
+                    <p className="category-desc">{cat.description}</p>
+                  </div>
+
+                  <div className="card-foot mt-auto">
+                    <button 
+                      className="btn-open-collection"
+                      onClick={() => handleCategoryClick(cat.name)}
+                    >
+                      <span>Open Collection</span>
+                      <FiChevronRight className="arrow-icon" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="empty-state-container py-10">
+          <EmptyState 
+            icon={<FiSearch />} 
+            title="No matches found" 
+            message={`No categories match "${searchQuery}". Please try a different search term.`}
+          />
+        </div>
+      )}
+    </div>
+  );
+};
+
+export default Categories;

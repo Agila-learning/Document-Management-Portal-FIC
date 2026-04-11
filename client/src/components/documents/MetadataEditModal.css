@@ -1,0 +1,30 @@
+.modal-small-content {
+  background: white;
+  width: 100%;
+  max-width: 520px;
+  border-radius: 20px;
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.edit-success-state .success-icon-box {
+  background-color: #ecfdf5;
+  color: #059669;
+  border: 1px solid #d1fae5;
+}
+
+.modal-footer {
+  background-color: #f8fafc;
+}
+
+.modal-small-content .form-control-custom,
+.modal-small-content .form-select-custom {
+  background-color: #f9fafb;
+}
+
+.modal-small-content .form-control-custom:focus,
+.modal-small-content .form-select-custom:focus {
+  background-color: white;
+}
