@@ -39,15 +39,17 @@ app.use(cors({
   origin: function (origin, callback) {
     if (!origin) return callback(null, true);
     
-    // Support all variants of localhost and 127.0.0.1
     const isLocal = origin.startsWith('http://localhost') || 
                   origin.startsWith('https://localhost') || 
                   origin.startsWith('http://127.0.0.1') || 
                   origin.startsWith('https://127.0.0.1');
+    
+    const isVercel = origin.endsWith('.vercel.app');
 
-    if (isLocal) {
+    if (isLocal || isVercel) {
         callback(null, true);
     } else {
+        console.log('CORS Blocked for Origin:', origin);
         callback(new Error('Not allowed by CORS'), false);
     }
   },
