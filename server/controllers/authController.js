@@ -98,3 +98,35 @@ exports.getMe = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// @desc    Seed admin user (Temporary diagnostic route)
+// @route   POST /api/auth/seed-admin
+// @access  Public
+exports.seedAdmin = async (req, res) => {
+    try {
+        const adminEmail = 'admin@forgeindiaconnect.com';
+        const existingAdmin = await User.findOne({ email: adminEmail });
+
+        if (existingAdmin) {
+            return res.status(400).json({ 
+                success: true,
+                message: 'Admin user already exists in this database.' 
+            });
+        }
+
+        const newAdmin = await User.create({
+            username: 'admin',
+            email: adminEmail,
+            password: 'password123',
+            role: 'Super Admin'
+        });
+
+        res.status(201).json({
+            success: true,
+            message: 'Admin user created successfully with password123.',
+            _id: newAdmin._id
+        });
+    } catch (error) {
+        res.status(500).json({ success: false, message: error.message });
+    }
+};

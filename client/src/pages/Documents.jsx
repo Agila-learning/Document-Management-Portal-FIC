@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { FiPlus, FiSearch, FiFilter } from 'react-icons/fi';
-import api from '../utils/api';
+import api, { BASE_URL } from '../utils/api';
 import DocumentTable from '../components/documents/DocumentTable';
 import UploadModal from '../components/documents/UploadModal';
 import DocumentPreviewModal from '../components/documents/DocumentPreviewModal';
@@ -61,9 +61,8 @@ const Documents = () => {
   };
 
   const handleDownload = (doc) => {
-    const baseUrl = 'http://localhost:5000';
     const relativePath = doc.filePath.replace(/\\/g, '/').replace('uploads/', '');
-    const url = `${baseUrl}/uploads/${relativePath}`;
+    const url = `${BASE_URL}/uploads/${relativePath}`;
     window.open(url, '_blank');
   };
 

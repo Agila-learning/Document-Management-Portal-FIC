@@ -1,14 +1,14 @@
 import React from 'react';
 import { FiX, FiDownload, FiExternalLink, FiMaximize2, FiFileText, FiImage } from 'react-icons/fi';
+import { BASE_URL } from '../../utils/api';
 import './DocumentPreviewModal.css';
 
 const DocumentPreviewModal = ({ isOpen, onClose, document: doc }) => {
   if (!isOpen || !doc) return null;
 
   const getFileUrl = () => {
-    const baseUrl = 'http://localhost:5000';
     const relativePath = doc.filePath.replace(/\\/g, '/').replace('uploads/', '');
-    return `${baseUrl}/uploads/${relativePath}`;
+    return `${BASE_URL}/uploads/${relativePath}`;
   };
 
   const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(doc.fileType?.replace('.', '').toLowerCase());

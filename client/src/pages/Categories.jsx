@@ -6,11 +6,13 @@ import {
 } from 'react-icons/fi';
 import api from '../utils/api';
 import EmptyState from '../components/common/EmptyState';
+import UploadModal from '../components/documents/UploadModal';
 import './Categories.css';
 
 const Categories = () => {
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name'); // 'name', 'count'
   const [sortOrder, setSortOrder] = useState('asc');
@@ -81,10 +83,16 @@ const Categories = () => {
             <p className="text-secondary font-medium m-0">Organize and manage your document library folders</p>
           </div>
           <div className="header-actions d-flex gap-3">
-            <button className="btn btn-navy-custom d-flex align-items-center gap-2 px-4 shadow-sm">
+            <button 
+              className="btn btn-navy-custom d-flex align-items-center gap-2 px-4 shadow-sm"
+              onClick={() => alert('Dynamic Categories feature is coming soon! For now, please use the existing categories.')}
+            >
               <FiPlus /> <span>New Category</span>
             </button>
-            <button className="btn btn-primary-custom d-flex align-items-center gap-2 px-4 shadow-brand">
+            <button 
+              className="btn btn-primary-custom d-flex align-items-center gap-2 px-4 shadow-brand"
+              onClick={() => setIsUploadOpen(true)}
+            >
               <FiFolder /> <span>Quick Upload</span>
             </button>
           </div>
@@ -188,6 +196,15 @@ const Categories = () => {
           />
         </div>
       )}
+
+      <UploadModal 
+        isOpen={isUploadOpen} 
+        onClose={() => setIsUploadOpen(false)} 
+        onUploadSuccess={() => {
+          // Re-fetch category stats (effectively a reload for now as stats are in the parent useEffect)
+          window.location.reload(); 
+        }}
+      />
     </div>
   );
 };

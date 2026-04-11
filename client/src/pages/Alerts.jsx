@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiAlertCircle, FiArrowRight, FiFileText, FiClock } from 'react-icons/fi';
-import api from '../utils/api';
+import api, { BASE_URL } from '../utils/api';
 import DocumentTable from '../components/documents/DocumentTable';
 import DocumentPreviewModal from '../components/documents/DocumentPreviewModal';
 import MetadataEditModal from '../components/documents/MetadataEditModal';
@@ -45,9 +45,8 @@ const Alerts = () => {
   };
 
   const handleDownload = (doc) => {
-    const baseUrl = 'http://localhost:5000';
     const relativePath = doc.filePath.replace(/\\/g, '/').replace('uploads/', '');
-    window.open(`${baseUrl}/uploads/${relativePath}`, '_blank');
+    window.open(`${BASE_URL}/uploads/${relativePath}`, '_blank');
   };
 
   return (

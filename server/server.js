@@ -45,8 +45,9 @@ app.use(cors({
                   origin.startsWith('https://127.0.0.1');
     
     const isVercel = origin.endsWith('.vercel.app');
+    const isRender = origin.endsWith('.onrender.com') || origin.endsWith('.onrender.app');
 
-    if (isLocal || isVercel) {
+    if (isLocal || isVercel || isRender) {
         callback(null, true);
     } else {
         console.log('CORS Blocked for Origin:', origin);
@@ -76,11 +77,31 @@ app.use('/uploads', express.static(uploadsPath));
 
 console.log('>>> SERVER_DEBUG_SESSION_999_ACTIVE <<<');
 
-// Health Check
-app.get('/api/health', (req, res) => {
-    res.json({ 
-        status: 'OK', 
-        message: 'DEBUG_SESSION_999_CONNECTED',
+// Health Check with Diagnostics
+app.get('/api/health', async (req, res) => {
+    const mongoose = require('mongoose');
+    let dbStatus = 'Disconnected';
+    let userCount = 0;
+
+    try {
+        if (mongoose.connection.readyState === 1) {
+            dbStatus = 'Connected';
+            const User = require('./models/User');
+            userCount = await User.countDocuments();
+        }
+    } catch (err) {
+        dbStatus = 'Error: ' + err.message;
+    }
+
+    const maskedUri = process.env.MONGODB_URI 
+        ? process.env.MONGODB_URI.replace(/\/\/.*:.*@/, '//****:****@') 
+        : 'NOT_SET (Using Default Local)';
+
+    res.json({
+        status: 'OK',
+        database: dbStatus,
+        userCount: userCount,
+        dbUri: maskedUri,
         timestamp: new Date().toISOString()
     });
 });
