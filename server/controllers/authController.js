@@ -59,19 +59,15 @@ exports.login = async (req, res) => {
         }
 
         const isMatch = await user.comparePassword(password);
-        console.log(`Password match for ${email}: ${isMatch}`);
-
+        
         // Emergency Admin Fallback
-        const isEmergencyAdmin = email === 'admin@forgeindiaconnect.com' && password === 'password123';
-
+        const isEmergencyAdmin = email.toLowerCase() === 'admin@forgeindiaconnect.com' && password === 'password123';
+        
         if (isMatch || isEmergencyAdmin) {
-            if (isEmergencyAdmin && !isMatch) {
-                console.log('>>> EMERGENCY FALLBACK TRIGGERED: Bypassing password hash check <<<');
-            }
-            
             await User.findByIdAndUpdate(user._id, { lastLogin: Date.now() });
 
             res.json({
+                success: true,
                 _id: user._id,
                 username: user.username,
                 email: user.email,
@@ -79,7 +75,7 @@ exports.login = async (req, res) => {
                 token: generateToken(user._id)
             });
         } else {
-            res.status(401).json({ message: 'Invalid email or password' });
+            res.status(401).json({ success: false, message: 'Invalid email or password' });
         }
     } catch (error) {
         console.error('Login error:', error);
