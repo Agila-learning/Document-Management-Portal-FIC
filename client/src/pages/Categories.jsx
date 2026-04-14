@@ -105,37 +105,27 @@ const Categories = () => {
 
   // ── inline styles for the modal (avoids CSS conflicts) ─────────────
   const overlay = {
-    position:'fixed', inset:0, background:'rgba(2, 6, 23, 0.7)',
-    backdropFilter:'blur(12px) saturate(180%)', zIndex:1200,
+    position:'fixed', inset:0, background:'rgba(0,0,0,0.5)', zIndex:1000,
     display:'flex', alignItems:'center', justifyContent:'center'
   };
   const modalBox = {
-    background:'rgba(255, 255, 255, 0.9)', borderRadius:24, width:460,
-    maxWidth:'92vw', overflow:'hidden',
-    boxShadow:'0 30px 70px rgba(99, 102, 241, 0.2)',
-    border: '1px solid rgba(255, 255, 255, 0.4)'
+    background:'#fff', borderRadius:16, width:400, padding:24,
+    boxShadow:'0 10px 25px rgba(0,0,0,0.1)'
   };
   const modalHead = {
-    background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
-    padding:'24px 28px', display:'flex',
-    alignItems:'center', justifyContent:'space-between'
+    display:'flex', alignItems:'center', justifyContent:'space-between',
+    marginBottom:24
   };
   const closeBtn = {
-    background:'rgba(255,255,255,0.2)', border:'none', color:'#fff',
-    width:36, height:36, borderRadius:'12px', display:'flex',
-    alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:'1.1rem',
-    transition: 'all 0.2s'
+    background:'none', border:'none', color:'#94a3b8', fontSize:'1.25rem', cursor:'pointer'
   };
   const fieldLabel = {
-    display:'block', fontSize:'0.75rem', fontWeight:700,
-    color:'#64748b', textTransform:'uppercase',
-    letterSpacing:'0.08em', marginBottom:8
+    display:'block', fontSize:'0.75rem', fontWeight:800, color:'#64748b',
+    textTransform:'uppercase', letterSpacing:'0.05em', marginBottom:8
   };
   const inputStyle = {
-    width:'100%', border:'1px solid #f1f5f9', borderRadius:14,
-    padding:'12px 16px', fontSize:'1rem', outline:'none',
-    background:'#f8fafc', color:'#0f172a', boxSizing:'border-box',
-    transition:'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+    width:'100%', border:'1px solid #e2e8f0', borderRadius:8,
+    padding:'10px 12px', fontSize:'0.875rem'
   };
 
   return (

@@ -1,19 +1,19 @@
 .layout-wrapper {
-  background-color: transparent;
+  background-color: var(--brand-bg);
   position: relative;
+  overflow-x: hidden;
 }
 
 .main-viewport {
-  transition: var(--transition);
+  transition: all 0.3s ease;
   width: 100%;
 }
 
 /* Offset main content by sidebar width on desktop */
 @media (min-width: 992px) {
   .main-viewport {
-    margin-left: 310px; /* 260px + 1.5rem margin + 1.5rem gap */
-    width: calc(100% - 310px);
-    padding: 1.5rem 2rem 1.5rem 0;
+    margin-left: 260px;
+    width: calc(100% - 260px);
   }
 }
 
@@ -22,23 +22,21 @@
 }
 
 .content-inner {
-  max-width: 1400px;
+  max-width: 1440px;
   width: 100%;
-  margin: 0 auto;
 }
 
 /* Mobile Sidebar Overlay */
 .sidebar-overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(2, 6, 23, 0.4);
-  backdrop-filter: blur(12px);
-  z-index: 1000;
-  animation: fadeInOverlay 0.4s ease-out;
+  background-color: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  z-index: 90;
+  animation: fadeInOverlay 0.3s ease-out;
 }
 
 @keyframes fadeInOverlay {
   from { opacity: 0; }
   to { opacity: 1; }
 }
-

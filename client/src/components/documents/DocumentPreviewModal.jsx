@@ -31,59 +31,58 @@ const DocumentPreviewModal = ({ isOpen, onClose, document: doc }) => {
 
   return (
     <div className="preview-overlay d-flex align-items-center justify-content-center" onClick={onClose}>
-      <div className="preview-content-box animate-scaleIn" onClick={e => e.stopPropagation()}>
+      <div className="modal-enterprise-content" onClick={e => e.stopPropagation()}>
         {/* Preview Header */}
-        <div className="preview-header d-flex align-items-center justify-content-between">
+        <div className="preview-header-modern d-flex align-items-center justify-content-between">
           <div className="d-flex align-items-center gap-3">
             <div className={`preview-type-icon ${isImage ? 'theme-image' : 'theme-pdf'}`}>
               {isImage ? <FiImage /> : <FiFileText />}
             </div>
-            <div className="preview-meta-hub">
-              <h2 className="preview-title">{doc.title}</h2>
+            <div>
+              <h2 className="preview-title mb-1">{doc.title}</h2>
               <div className="d-flex align-items-center gap-2">
-                <span className="preview-cat">{doc.category}</span>
-                <span className="dot-sep">•</span>
-                <span className="preview-size">{(doc.fileSize / 1024 / 1024).toFixed(2)} MB</span>
+                <span className="preview-cat-badge">{doc.category}</span>
+                <span className="text-secondary small font-bold">{(doc.fileSize / 1024 / 1024).toFixed(2)} MB</span>
               </div>
             </div>
           </div>
           
-          <div className="preview-actions d-flex align-items-center gap-2">
+          <div className="d-flex align-items-center gap-2">
             <a 
               href={getFileUrl()} 
               target="_blank" 
               rel="noopener noreferrer"
-              className="btn-preview-tool"
+              className="btn-preview-action"
               title="Open in New Tab"
             >
               <FiExternalLink />
             </a>
-            <button className="btn-preview-tool" onClick={onClose}>
+            <button className="btn-close-preview" onClick={onClose}>
               <FiX />
             </button>
           </div>
         </div>
 
         {/* Preview Body */}
-        <div className="preview-viewport d-flex align-items-center justify-content-center">
+        <div className="preview-viewport-main d-flex align-items-center justify-content-center">
           {isImage ? (
-            <div className="image-frame">
+            <div className="preview-image-container">
               <img 
                 src={getFileUrl()} 
                 alt={doc.title} 
-                className="img-fluid rounded"
+                className="img-fluid rounded shadow-sm"
               />
             </div>
           ) : isPDF ? (
             <iframe 
               src={`${getFileUrl()}#toolbar=0`} 
               title={doc.title}
-              className="pdf-frame w-100 h-100 border-0"
+              className="pdf-viewer-frame w-100 h-100 border-0"
             />
           ) : (
-            <div className="no-preview text-center">
-              <div className="no-preview-icon mb-3">
-                <FiFileText />
+            <div className="no-preview-available text-center">
+              <div className="mb-4">
+                <FiFileText size={48} className="text-muted" />
               </div>
               <h3 className="h5 font-extrabold text-navy">Preview Unavailable</h3>
               <p className="small text-secondary font-medium mb-4">This file type ({doc.fileType}) requires a local application to view.</p>

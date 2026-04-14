@@ -88,7 +88,7 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
                   type="text" 
                   value={metadata.title} 
                   onChange={e => setMetadata({...metadata, title: e.target.value})}
-                  className="input-premium w-100"
+                  className="form-control-custom w-100"
                   required
                 />
               </div>
@@ -100,7 +100,7 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
                     <select 
                       value={metadata.companyName} 
                       onChange={e => setMetadata({...metadata, companyName: e.target.value})}
-                      className="input-premium w-100"
+                      className="form-control-custom w-100"
                     >
                       {companies.map(comp => <option key={comp} value={comp}>{comp}</option>)}
                     </select>
@@ -116,7 +116,7 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
                     <select 
                       value={metadata.category} 
                       onChange={e => setMetadata({...metadata, category: e.target.value})}
-                      className="input-premium w-100"
+                      className="form-control-custom w-100"
                     >
                       {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
                     </select>
@@ -129,7 +129,7 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
                     <select 
                       value={metadata.confidentiality} 
                       onChange={e => setMetadata({...metadata, confidentiality: e.target.value})}
-                      className="input-premium w-100"
+                      className="form-control-custom w-100"
                     >
                       <option value="Internal">Internal</option>
                       <option value="Public">Public</option>
@@ -146,7 +146,7 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
                   value={metadata.description} 
                   onChange={e => setMetadata({...metadata, description: e.target.value})}
                   placeholder="Optional notes..."
-                  className="input-premium w-100"
+                  className="form-control-custom w-100"
                   rows="3"
                 />
               </div>
@@ -160,7 +160,7 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
                   type="date" 
                   value={metadata.expiryDate} 
                   onChange={e => setMetadata({...metadata, expiryDate: e.target.value})}
-                  className="input-premium w-100"
+                  className="form-control-custom w-100"
                 />
               </div>
             </div>
@@ -176,7 +176,7 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
               </button>
               <button 
                 type="submit" 
-                className="btn-premium px-5"
+                className="btn btn-primary-custom px-5"
                 disabled={updating}
               >
                 {updating ? <FiLoader className="spinner-icon" /> : <FiCheck fontSize="1.1rem" />}

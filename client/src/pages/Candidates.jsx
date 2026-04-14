@@ -108,7 +108,7 @@ const Candidates = () => {
           </div>
         </div>
         <button 
-          className="btn-premium d-flex align-items-center justify-content-center gap-2 px-4 py-3"
+          className="btn btn-primary-custom d-flex align-items-center justify-content-center gap-2 px-4 py-3"
           onClick={() => setIsRegisterOpen(true)}
         >
           <FiPlus fontSize="1.25rem" />
