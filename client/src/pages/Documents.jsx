@@ -66,10 +66,12 @@ const Documents = () => {
   };
 
   const handleDownload = (doc) => {
-    const relativePath = doc.filePath.replace(/\\/g, '/').replace('uploads/', '');
-    const url = `${BASE_URL}/uploads/${relativePath}`;
+    const normalized = doc.filePath.replace(/\\/g, '/');
+    const afterUploads = normalized.split('uploads/').slice(1).join('uploads/');
+    const url = `${BASE_URL}/uploads/${afterUploads}`;
     window.open(url, '_blank');
   };
+
 
   const categories = [
     'All', 'MOU', 'NOC', 'SLA', 'Offer Letters', 'HR Documents', 

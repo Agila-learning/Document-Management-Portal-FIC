@@ -7,9 +7,12 @@ const DocumentPreviewModal = ({ isOpen, onClose, document: doc }) => {
   if (!isOpen || !doc) return null;
 
   const getFileUrl = () => {
-    const relativePath = doc.filePath.replace(/\\/g, '/').replace('uploads/', '');
-    return `${BASE_URL}/uploads/${relativePath}`;
+    // Normalize backslashes, then extract everything after 'uploads/'
+    const normalized = doc.filePath.replace(/\\/g, '/');
+    const afterUploads = normalized.split('uploads/').slice(1).join('uploads/');
+    return `${BASE_URL}/uploads/${afterUploads}`;
   };
+
 
   const isImage = ['jpg', 'jpeg', 'png', 'gif'].includes(doc.fileType?.replace('.', '').toLowerCase());
   const isPDF = doc.fileType?.replace('.', '').toLowerCase() === 'pdf';

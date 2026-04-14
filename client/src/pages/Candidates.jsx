@@ -67,6 +67,14 @@ const Candidates = () => {
           }
         }
         break;
+      case 'verify':
+        try {
+          await api.put(`/candidates/${candidate._id}`, { verificationStatus: 'Verified' });
+          fetchCandidates();
+        } catch (error) {
+          alert('Failed to verify candidate');
+        }
+        break;
       case 'incomplete':
         try {
           await api.put(`/candidates/${candidate._id}`, { verificationStatus: 'Incomplete' });

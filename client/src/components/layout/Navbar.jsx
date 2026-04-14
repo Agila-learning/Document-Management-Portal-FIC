@@ -2,19 +2,25 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiSearch, FiBell, FiPlus, FiMenu, FiChevronDown, FiUser, FiSettings, FiLogOut } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
+import NotificationDropdown from './NotificationDropdown';
 import './Navbar.css';
 
 const Navbar = ({ onUploadClick, onMenuClick }) => {
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  const [profileOpen, setProfileOpen] = useState(false);
+  const [profileOpen, setProfileOpen]   = useState(false);
+  const [notifOpen,   setNotifOpen]     = useState(false);
   const dropdownRef = useRef(null);
+  const notifRef    = useRef(null);
 
-  // Close dropdown when clicking outside
+  // Close dropdowns when clicking outside
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
         setProfileOpen(false);
+      }
+      if (notifRef.current && !notifRef.current.contains(e.target)) {
+        setNotifOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -55,10 +61,17 @@ const Navbar = ({ onUploadClick, onMenuClick }) => {
 
             <div className="nav-divider" />
 
-            <button className="btn-notification">
-              <FiBell />
-              <span className="notification-indicator" />
-            </button>
+            <div className="position-relative" ref={notifRef}>
+              <button
+                className={`btn-notification ${notifOpen ? 'active' : ''}`}
+                onClick={() => setNotifOpen(prev => !prev)}
+                title="Notifications"
+              >
+                <FiBell />
+                <span className="notification-indicator" />
+              </button>
+              <NotificationDropdown isOpen={notifOpen} onClose={() => setNotifOpen(false)} />
+            </div>
           </div>
 
           {/* Profile Dropdown */}
