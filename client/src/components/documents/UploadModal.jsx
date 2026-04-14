@@ -7,7 +7,8 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const [file, setFile] = useState(null);
   const [metadata, setMetadata] = useState({
     title: '',
-    category: 'Miscellaneous',
+    companyName: 'Skilnexia',
+    category: 'MOU',
     description: '',
     confidentiality: 'Internal',
     expiryDate: ''
@@ -16,9 +17,11 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const [success, setSuccess] = useState(false);
   const [noExpiry, setNoExpiry] = useState(false);
 
+  const companies = ['Skilnexia', 'Antigraviity', 'Forge India Connect'];
   const categories = [
-    'MOU', 'NOC', 'SLA', 'Candidate', 'Offer Letters', 
-    'Posters', 'Legal', 'HR', 'Client', 'Miscellaneous'
+    'MOU', 'NOC', 'SLA', 'Offer Letters', 'HR Documents', 
+    'Legal Documents', 'Posters', 'Candidate Documents', 
+    'Client Documents', 'Miscellaneous'
   ];
 
   const handleFileChange = (e) => {
@@ -39,6 +42,7 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
     const formData = new FormData();
     formData.append('file', file);
     formData.append('title', metadata.title);
+    formData.append('companyName', metadata.companyName);
     formData.append('category', metadata.category);
     formData.append('description', metadata.description);
     formData.append('confidentiality', metadata.confidentiality);
@@ -68,7 +72,8 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
     setFile(null);
     setMetadata({ 
       title: '', 
-      category: 'Miscellaneous', 
+      companyName: 'Skilnexia',
+      category: 'MOU', 
       description: '', 
       confidentiality: 'Internal',
       expiryDate: '' 
@@ -163,6 +168,19 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
 
               <div className="col-12 col-md-6">
                 <div className="form-group-custom">
+                  <label>Company</label>
+                  <select 
+                    value={metadata.companyName} 
+                    onChange={e => setMetadata({...metadata, companyName: e.target.value})}
+                    className="form-select-custom w-100"
+                  >
+                    {companies.map(comp => <option key={comp} value={comp}>{comp}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="col-12 col-md-6">
+                <div className="form-group-custom">
                   <label>Category</label>
                   <select 
                     value={metadata.category} 
@@ -174,7 +192,7 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
                 </div>
               </div>
 
-              <div className="col-12">
+              <div className="col-12 col-md-6">
                 <div className="form-group-custom">
                   <label>Description (Optional)</label>
                   <textarea 

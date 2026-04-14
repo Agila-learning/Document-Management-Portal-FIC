@@ -12,12 +12,16 @@ import './Documents.css';
 const Documents = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const categoryParam = searchParams.get('category');
+  const companyParam = searchParams.get('company');
 
   const [documents, setDocuments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState(categoryParam || '');
+  const [selectedCompany, setSelectedCompany] = useState(companyParam || 'All');
+  
+  const companies = ['All', 'Skilnexia', 'Antigraviity', 'Forge India Connect'];
   
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -29,7 +33,8 @@ const Documents = () => {
       const { data } = await api.get('/documents', {
         params: {
           search,
-          category: category !== 'All' ? category : undefined
+          category: category !== 'All' ? category : undefined,
+          companyName: selectedCompany !== 'All' ? selectedCompany : undefined
         }
       });
       setDocuments(data);
@@ -42,7 +47,7 @@ const Documents = () => {
 
   useEffect(() => {
     fetchDocuments();
-  }, [category]);
+  }, [category, selectedCompany]);
 
   const handleSearch = (e) => {
     if (e.key === 'Enter') {
@@ -67,8 +72,9 @@ const Documents = () => {
   };
 
   const categories = [
-    'All', 'MOU', 'NOC', 'SLA', 'Candidate', 'Offer Letters', 
-    'Posters', 'Legal', 'HR', 'Client', 'Miscellaneous'
+    'All', 'MOU', 'NOC', 'SLA', 'Offer Letters', 'HR Documents', 
+    'Legal Documents', 'Posters', 'Candidate Documents', 
+    'Client Documents', 'Miscellaneous'
   ];
 
   return (
@@ -103,7 +109,12 @@ const Documents = () => {
                     key={cat}
                     onClick={() => {
                       setCategory(cat);
-                      setSearchParams(cat === 'All' ? {} : { category: cat });
+                      setSearchParams(prev => { 
+                        const newParams = new URLSearchParams(prev);
+                        if (cat === 'All') newParams.delete('category');
+                        else newParams.set('category', cat);
+                        return newParams;
+                      });
                     }}
                     className={`btn-filter ${category === cat || (cat === 'All' && !category) ? 'active' : ''}`}
                   >
@@ -114,16 +125,36 @@ const Documents = () => {
             </div>
           </div>
           <div className="col-12 col-lg-4">
-            <div className="search-box position-relative">
-              <FiSearch className="search-icon-lib" />
-              <input 
-                type="text" 
-                placeholder="Search by title or tags..." 
-                className="form-control-custom w-100"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                onKeyDown={handleSearch}
-              />
+            <div className="d-flex flex-column gap-3">
+              <div className="d-flex align-items-center gap-2 bg-white px-3 py-2 rounded shadow-sm border">
+                <span className="small font-bold text-secondary text-uppercase tracking-wider">Workspace:</span>
+                <select 
+                  className="form-select-custom border-0 bg-transparent fw-semibold w-100"
+                  value={selectedCompany}
+                  onChange={(e) => {
+                    setSelectedCompany(e.target.value);
+                    setSearchParams(prev => {
+                      const newParams = new URLSearchParams(prev);
+                      if (e.target.value === 'All') newParams.delete('company');
+                      else newParams.set('company', e.target.value);
+                      return newParams;
+                    });
+                  }}
+                >
+                  {companies.map(comp => <option key={comp} value={comp}>{comp}</option>)}
+                </select>
+              </div>
+              <div className="search-box position-relative">
+                <FiSearch className="search-icon-lib" />
+                <input 
+                  type="text" 
+                  placeholder="Search by title or tags..." 
+                  className="form-control-custom w-100"
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  onKeyDown={handleSearch}
+                />
+              </div>
             </div>
           </div>
         </div>

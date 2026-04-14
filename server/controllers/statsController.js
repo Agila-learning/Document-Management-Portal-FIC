@@ -6,27 +6,31 @@ const User = require('../models/User');
 // @access  Private
 exports.getDashboardStats = async (req, res) => {
     try {
-        const totalDocuments = await Document.countDocuments({ status: { $ne: 'Deleted' } });
+        const { companyName } = req.query;
+        let baseQuery = { status: { $ne: 'Deleted' } };
+        if (companyName && companyName !== 'All') {
+            baseQuery.companyName = companyName;
+        }
+
+        const totalDocuments = await Document.countDocuments(baseQuery);
         
         // Recently uploaded (last 24h)
         const simplifiedDate = new Date();
         simplifiedDate.setHours(simplifiedDate.getHours() - 24);
-        const recentUploads = await Document.countDocuments({ 
-            createdAt: { $gte: simplifiedDate },
-            status: { $ne: 'Deleted' }
-        });
+        const recentUploads = await Document.countDocuments({ ...baseQuery, createdAt: { $gte: simplifiedDate } });
 
         // Expiring soon (next 30 days)
         const nextMonth = new Date();
         nextMonth.setDate(nextMonth.getDate() + 30);
         const expiringSoon = await Document.countDocuments({
-            expiryDate: { $gte: new Date(), $lte: nextMonth },
-            status: { $nin: ['Deleted', 'Archived'] }
+            ...baseQuery,
+            status: { $nin: ['Deleted', 'Archived'] },
+            expiryDate: { $gte: new Date(), $lte: nextMonth }
         });
 
         // Storage Usage
         const storageStats = await Document.aggregate([
-            { $match: { status: { $ne: 'Deleted' } } },
+            { $match: baseQuery },
             { $group: { _id: null, totalSize: { $sum: "$fileSize" } } }
         ]);
         
@@ -34,7 +38,7 @@ exports.getDashboardStats = async (req, res) => {
 
         // Documents by category
         const categoryStats = await Document.aggregate([
-            { $match: { status: { $ne: 'Deleted' } } },
+            { $match: baseQuery },
             { $group: { _id: "$category", count: { $sum: 1 } } }
         ]);
 

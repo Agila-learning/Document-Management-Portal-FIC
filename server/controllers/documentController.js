@@ -51,7 +51,7 @@ exports.uploadDocument = async (req, res) => {
 // @access  Private
 exports.getDocuments = async (req, res) => {
     try {
-        const { search, category, fileType, status, candidate, isStarred, isPinned, sortBy } = req.query;
+        const { search, category, fileType, status, candidate, isStarred, isPinned, sortBy, companyName } = req.query;
 
         // Default query: exclude soft-deleted files unless specifically requested
         let query = {};
@@ -60,6 +60,10 @@ exports.getDocuments = async (req, res) => {
             query.status = status;
         } else {
             query.status = { $ne: 'Deleted' };
+        }
+
+        if (companyName && companyName !== 'All') {
+            query.companyName = companyName;
         }
 
         // Search
@@ -96,7 +100,7 @@ exports.getDocuments = async (req, res) => {
 // @access  Private
 exports.updateDocument = async (req, res) => {
     try {
-        const { title, category, description, status, isStarred, isPinned, confidentiality } = req.body;
+        const { title, category, description, status, isStarred, isPinned, confidentiality, companyName } = req.body;
         
         const document = await Document.findById(req.params.id);
 
@@ -109,6 +113,7 @@ exports.updateDocument = async (req, res) => {
         document.description = description || document.description;
         document.status = status || document.status;
         document.confidentiality = confidentiality || document.confidentiality;
+        document.companyName = companyName || document.companyName;
         
         if (isStarred !== undefined) document.isStarred = isStarred;
         if (isPinned !== undefined) document.isPinned = isPinned;

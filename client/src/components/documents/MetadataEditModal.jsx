@@ -6,6 +6,7 @@ import './MetadataEditModal.css';
 const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) => {
   const [metadata, setMetadata] = useState({
     title: '',
+    companyName: 'Skilnexia',
     category: '',
     description: '',
     confidentiality: '',
@@ -14,15 +15,18 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
   const [updating, setUpdating] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  const companies = ['Skilnexia', 'Antigraviity', 'Forge India Connect'];
   const categories = [
-    'MOU', 'NOC', 'SLA', 'Candidate', 'Offer Letters', 
-    'Posters', 'Legal', 'HR', 'Client', 'Miscellaneous'
+    'MOU', 'NOC', 'SLA', 'Offer Letters', 'HR Documents', 
+    'Legal Documents', 'Posters', 'Candidate Documents', 
+    'Client Documents', 'Miscellaneous'
   ];
 
   useEffect(() => {
     if (doc) {
       setMetadata({
         title: doc.title || '',
+        companyName: doc.companyName || 'Skilnexia',
         category: doc.category || 'Miscellaneous',
         description: doc.description || '',
         confidentiality: doc.confidentiality || 'Internal',
@@ -88,6 +92,19 @@ const MetadataEditModal = ({ isOpen, onClose, document: doc, onUpdateSuccess }) 
             </div>
 
             <div className="row g-3 mb-4">
+              <div className="col-12">
+                <div className="form-group-custom">
+                  <label>Company</label>
+                  <select 
+                    value={metadata.companyName} 
+                    onChange={e => setMetadata({...metadata, companyName: e.target.value})}
+                    className="form-select-custom w-100"
+                  >
+                    {companies.map(comp => <option key={comp} value={comp}>{comp}</option>)}
+                  </select>
+                </div>
+              </div>
+
               <div className="col-6">
                 <div className="form-group-custom">
                   <label className="d-flex align-items-center gap-2">

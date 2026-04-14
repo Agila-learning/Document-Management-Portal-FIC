@@ -10,8 +10,9 @@ const documentSchema = new mongoose.Schema({
         type: String,
         required: true,
         enum: [
-            'MOU', 'NOC', 'SLA', 'Candidate', 'Offer Letters', 
-            'Posters', 'Legal', 'HR', 'Client', 'Miscellaneous'
+            'MOU', 'NOC', 'SLA', 'Offer Letters', 'HR Documents', 
+            'Legal Documents', 'Posters', 'Candidate Documents', 
+            'Client Documents', 'Miscellaneous'
         ]
     },
     description: String,
@@ -32,7 +33,11 @@ const documentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Candidate'
     },
-    companyName: String,
+    companyName: {
+        type: String,
+        required: true,
+        enum: ['Skilnexia', 'Antigraviity', 'Forge India Connect']
+    },
     clientName: String,
     status: {
         type: String,

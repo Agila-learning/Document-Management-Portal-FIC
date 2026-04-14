@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Sidebar from './Sidebar';
 import Navbar from './Navbar';
 import UploadModal from '../documents/UploadModal';
+import FICQuippy from '../common/FICQuippy';
 import './DashboardLayout.css';
 
 const DashboardLayout = ({ children }) => {
@@ -42,6 +43,8 @@ const DashboardLayout = ({ children }) => {
         onClose={toggleUploadModal} 
         onUploadSuccess={() => window.location.reload()}
       />
+      
+      <FICQuippy />
     </div>
   );
 };

@@ -2,23 +2,17 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure uploads directory exists
+// Ensure base uploads directory exists
 const uploadDir = 'uploads/';
 if (!fs.existsSync(uploadDir)) {
     fs.mkdirSync(uploadDir);
-    // Create subfolders for categories
-    const categories = ['MOU', 'NOC', 'SLA', 'Candidate', 'Legal', 'HR', 'Client', 'Miscellaneous'];
-    categories.forEach(cat => {
-        if (!fs.existsSync(path.join(uploadDir, cat))) {
-            fs.mkdirSync(path.join(uploadDir, cat));
-        }
-    });
 }
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        const company = req.body.companyName || 'Unassigned';
         const category = req.body.category || 'Miscellaneous';
-        const dest = path.join('uploads', category);
+        const dest = path.join('uploads', company, category);
         if (!fs.existsSync(dest)) {
             fs.mkdirSync(dest, { recursive: true });
         }

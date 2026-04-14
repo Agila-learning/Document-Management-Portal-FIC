@@ -13,13 +13,17 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [activity, setActivity] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedCompany, setSelectedCompany] = useState('All');
   const navigate = useNavigate();
+
+  const companies = ['All', 'Skilnexia', 'Antigraviity', 'Forge India Connect'];
 
   useEffect(() => {
     const fetchDashboardData = async () => {
+      setLoading(true);
       try {
         const [statsRes, activityRes] = await Promise.all([
-          api.get('/stats/dashboard'),
+          api.get('/stats/dashboard', { params: { companyName: selectedCompany } }),
           api.get('/activity/recent')
         ]);
         setStats(statsRes.data);
@@ -31,7 +35,7 @@ const Dashboard = () => {
       }
     };
     fetchDashboardData();
-  }, []);
+  }, [selectedCompany]);
 
   const statCards = [
     { 
@@ -64,13 +68,25 @@ const Dashboard = () => {
   return (
     <div className="dashboard-wrapper animate-fade">
       {/* Page Header */}
-      <div className="dashboard-hero mb-5">
-        <div className="hero-icon">
-          <FiActivity />
+      <div className="dashboard-hero mb-5 d-flex flex-column flex-md-row justify-content-between align-items-md-center">
+        <div className="d-flex align-items-center mb-3 mb-md-0">
+          <div className="hero-icon me-3">
+            <FiActivity />
+          </div>
+          <div className="hero-text">
+            <h1 className="hero-title">Nexus Control Center</h1>
+            <p className="hero-subtitle">Unified management for Forge India Connect personnel and records</p>
+          </div>
         </div>
-        <div className="hero-text">
-          <h1 className="hero-title">Nexus Control Center</h1>
-          <p className="hero-subtitle">Unified management for Forge India Connect personnel and records</p>
+        <div className="company-filter-box d-flex align-items-center gap-3 bg-white p-2 rounded shadow-sm">
+          <span className="font-bold text-navy small text-uppercase tracking-wider">Workspace:</span>
+          <select 
+            className="form-select-custom border-0 bg-transparent fw-semibold"
+            value={selectedCompany}
+            onChange={(e) => setSelectedCompany(e.target.value)}
+          >
+            {companies.map(comp => <option key={comp} value={comp}>{comp}</option>)}
+          </select>
         </div>
       </div>
 

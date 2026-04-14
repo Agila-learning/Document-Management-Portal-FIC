@@ -16,26 +16,29 @@ const Categories = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [sortBy, setSortBy] = useState('name'); // 'name', 'count'
   const [sortOrder, setSortOrder] = useState('asc');
+  const [selectedCompany, setSelectedCompany] = useState('All');
   const navigate = useNavigate();
 
-  // Master list of categories (In a real app, this would come from a Category model)
+  const companies = ['All', 'Skilnexia', 'Antigraviity', 'Forge India Connect'];
+
+  // Master list of categories
   const [categoryList, setCategoryList] = useState([
     { id: 1, name: 'MOU', description: 'Memorandums of Understanding and agreements.' },
     { id: 2, name: 'NOC', description: 'No Objection Certificates and clearances.' },
     { id: 3, name: 'SLA', description: 'Service Level Agreements for clients.' },
-    { id: 4, name: 'Candidate', description: 'Personal onboarding and KYC files.' },
-    { id: 5, name: 'Offer Letters', description: 'Employment and recruitment records.' },
-    { id: 6, name: 'Posters', description: 'Visual assets and event graphics.' },
-    { id: 7, name: 'Legal', description: 'Court documents and legal contracts.' },
-    { id: 8, name: 'HR', description: 'Personnel management and internal files.' },
-    { id: 9, name: 'Client', description: 'Project specific client documentation.' },
+    { id: 4, name: 'Offer Letters', description: 'Employment and recruitment records.' },
+    { id: 5, name: 'HR Documents', description: 'Personnel management and internal HR files.' },
+    { id: 6, name: 'Legal Documents', description: 'Court documents, patents, and legal forms.' },
+    { id: 7, name: 'Posters', description: 'Visual assets and event graphics.' },
+    { id: 8, name: 'Candidate Documents', description: 'Personal onboarding and KYC files.' },
+    { id: 9, name: 'Client Documents', description: 'Project specific client documentation.' },
     { id: 10, name: 'Miscellaneous', description: 'General files and uncategorized media.' }
   ]);
 
   useEffect(() => {
     const fetchCategoryStats = async () => {
       try {
-        const { data } = await api.get('/stats/dashboard');
+        const { data } = await api.get('/stats/dashboard', { params: { companyName: selectedCompany } });
         setCategories(data.categoryStats || []);
       } catch (error) {
         console.error('Error fetching category stats:', error);
@@ -44,10 +47,10 @@ const Categories = () => {
       }
     };
     fetchCategoryStats();
-  }, []);
+  }, [selectedCompany]);
 
   const handleCategoryClick = (category) => {
-    navigate(`/documents?category=${encodeURIComponent(category)}`);
+    navigate(`/documents?category=${encodeURIComponent(category)}${selectedCompany !== 'All' ? `&company=${encodeURIComponent(selectedCompany)}` : ''}`);
   };
 
   const toggleSortOrder = () => {
@@ -102,7 +105,7 @@ const Categories = () => {
       {/* Control Bar: Search & Sort */}
       <div className="categories-control-bar card-enterprise p-3 mb-5">
         <div className="row g-3 align-items-center">
-          <div className="col-12 col-md-5 col-lg-4">
+          <div className="col-12 col-md-4">
             <div className="search-pill-box">
               <FiSearch className="search-pill-icon" />
               <input 
@@ -114,11 +117,21 @@ const Categories = () => {
               />
             </div>
           </div>
-          <div className="col-12 col-md-7 col-lg-8">
-            <div className="d-flex align-items-center justify-content-md-end gap-3">
-              <div className="sort-control d-flex align-items-center gap-2">
+          <div className="col-12 col-md-8">
+            <div className="d-flex align-items-center justify-content-md-end gap-3 flex-wrap">
+              <div className="sort-control d-flex align-items-center gap-2 bg-white px-3 py-2 rounded shadow-sm">
+                <span className="small font-bold text-secondary text-uppercase tracking-wider">Workspace:</span>
+                <select 
+                  className="form-select-custom border-0 bg-transparent fw-semibold" 
+                  value={selectedCompany}
+                  onChange={(e) => setSelectedCompany(e.target.value)}
+                >
+                  {companies.map(comp => <option key={comp} value={comp}>{comp}</option>)}
+                </select>
+              </div>
+              <div className="sort-control d-flex align-items-center gap-2 bg-white px-3 py-2 rounded shadow-sm">
                 <FiFilter className="text-secondary" />
-                <span className="small font-bold text-secondary text-uppercase tracking-wider">Sort By:</span>
+                <span className="small font-bold text-secondary text-uppercase tracking-wider">Sort:</span>
                 <select 
                   className="form-select-custom" 
                   value={sortBy}
