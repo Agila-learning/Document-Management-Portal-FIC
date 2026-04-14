@@ -7,10 +7,22 @@ const DocumentPreviewModal = ({ isOpen, onClose, document: doc }) => {
   if (!isOpen || !doc) return null;
 
   const getFileUrl = () => {
-    // Normalize backslashes, then extract everything after 'uploads/'
+    if (!doc.filePath) return '';
+    
+    // Normalize path separators
     const normalized = doc.filePath.replace(/\\/g, '/');
-    const afterUploads = normalized.split('uploads/').slice(1).join('uploads/');
-    return `${BASE_URL}/uploads/${afterUploads}`;
+    
+    // If path starts with uploads/, remove it so we don't double it up
+    let cleanPath = normalized;
+    if (normalized.includes('uploads/')) {
+      cleanPath = normalized.split('uploads/').pop();
+    }
+    
+    // Ensure BASE_URL doesn't end with slash and path doesn't start with one
+    const base = BASE_URL.replace(/\/$/, '');
+    const path = cleanPath.replace(/^\//, '');
+    
+    return `${base}/uploads/${path}`;
   };
 
 

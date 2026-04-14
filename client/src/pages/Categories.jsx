@@ -105,35 +105,37 @@ const Categories = () => {
 
   // ── inline styles for the modal (avoids CSS conflicts) ─────────────
   const overlay = {
-    position:'fixed', inset:0, background:'rgba(15,23,42,0.6)',
-    backdropFilter:'blur(5px)', zIndex:1200,
+    position:'fixed', inset:0, background:'rgba(2, 6, 23, 0.7)',
+    backdropFilter:'blur(12px) saturate(180%)', zIndex:1200,
     display:'flex', alignItems:'center', justifyContent:'center'
   };
   const modalBox = {
-    background:'#ffffff', borderRadius:20, width:430,
+    background:'rgba(255, 255, 255, 0.9)', borderRadius:24, width:460,
     maxWidth:'92vw', overflow:'hidden',
-    boxShadow:'0 30px 70px rgba(0,0,0,0.22)'
+    boxShadow:'0 30px 70px rgba(99, 102, 241, 0.2)',
+    border: '1px solid rgba(255, 255, 255, 0.4)'
   };
   const modalHead = {
-    background:'linear-gradient(135deg,#2563eb 0%,#4f46e5 100%)',
-    padding:'20px 24px', display:'flex',
+    background: 'linear-gradient(135deg, #6366f1 0%, #a855f7 100%)',
+    padding:'24px 28px', display:'flex',
     alignItems:'center', justifyContent:'space-between'
   };
   const closeBtn = {
-    background:'rgba(255,255,255,0.22)', border:'none', color:'#fff',
-    width:32, height:32, borderRadius:'50%', display:'flex',
-    alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:'1rem'
+    background:'rgba(255,255,255,0.2)', border:'none', color:'#fff',
+    width:36, height:36, borderRadius:'12px', display:'flex',
+    alignItems:'center', justifyContent:'center', cursor:'pointer', fontSize:'1.1rem',
+    transition: 'all 0.2s'
   };
   const fieldLabel = {
-    display:'block', fontSize:'0.7rem', fontWeight:800,
+    display:'block', fontSize:'0.75rem', fontWeight:700,
     color:'#64748b', textTransform:'uppercase',
-    letterSpacing:'0.06em', marginBottom:6
+    letterSpacing:'0.08em', marginBottom:8
   };
   const inputStyle = {
-    width:'100%', border:'1.5px solid #e2e8f0', borderRadius:10,
-    padding:'10px 14px', fontSize:'0.9rem', outline:'none',
+    width:'100%', border:'1px solid #f1f5f9', borderRadius:14,
+    padding:'12px 16px', fontSize:'1rem', outline:'none',
     background:'#f8fafc', color:'#0f172a', boxSizing:'border-box',
-    transition:'border-color .2s'
+    transition:'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
   };
 
   return (

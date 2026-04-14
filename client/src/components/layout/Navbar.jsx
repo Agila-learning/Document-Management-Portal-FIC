@@ -52,7 +52,7 @@ const Navbar = ({ onUploadClick, onMenuClick }) => {
         <div className="navbar-right">
           <div className="nav-actions-group">
             <button 
-              className="btn btn-primary-custom nav-quick-btn"
+              className="btn-premium nav-quick-btn"
               onClick={onUploadClick}
             >
               <FiPlus />

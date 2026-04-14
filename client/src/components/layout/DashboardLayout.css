@@ -1,11 +1,10 @@
 .layout-wrapper {
-  background-color: var(--brand-bg);
+  background-color: transparent;
   position: relative;
-  overflow-x: hidden;
 }
 
 .main-viewport {
-  transition: all 0.3s ease;
+  transition: var(--transition);
   width: 100%;
 }
 
@@ -14,6 +13,7 @@
   .main-viewport {
     margin-left: 260px;
     width: calc(100% - 260px);
+    padding: 1.5rem;
   }
 }
 
@@ -22,8 +22,9 @@
 }
 
 .content-inner {
-  max-width: 1440px;
+  max-width: 1400px;
   width: 100%;
+  margin: 0 auto;
 }
 
 /* Mobile Sidebar Overlay */
@@ -31,12 +32,13 @@
   position: fixed;
   inset: 0;
   background-color: rgba(15, 23, 42, 0.4);
-  backdrop-filter: blur(4px);
-  z-index: 90;
-  animation: fadeInOverlay 0.3s ease-out;
+  backdrop-filter: blur(8px);
+  z-index: 1000;
+  animation: fadeInOverlay 0.4s ease-out;
 }
 
 @keyframes fadeInOverlay {
   from { opacity: 0; }
   to { opacity: 1; }
 }
+

@@ -31,7 +31,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     <aside className={`sidebar-main ${isOpen ? 'sidebar-open' : ''}`}>
       <div className="sidebar-header">
         <div className="brand-wrapper">
-          <div className="brand-logo">F</div>
+          <img src="/assets/fic-logo.png" alt="FIC Logo" className="brand-logo-img" />
           <div className="brand-text-block">
             <h1 className="brand-title">Forge India</h1>
             <span className="brand-subtitle">Connect</span>
@@ -50,6 +50,7 @@ const Sidebar = ({ isOpen, onClose }) => {
             className={({ isActive }) => `side-link ${isActive ? 'active' : ''}`}
             onClick={() => window.innerWidth < 992 && onClose()}
           >
+            <div className="active-glow" />
             <item.icon className="link-icon" />
             <span>{item.label}</span>
           </NavLink>
