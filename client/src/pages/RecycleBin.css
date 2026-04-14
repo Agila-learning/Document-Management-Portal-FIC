@@ -1,43 +1,56 @@
 .trash-wrapper {
-  animation: fadeIn 0.4s ease-out;
+  animation: animate-up 0.5s ease-out;
 }
 
 .trash-header-icon-box {
-  width: 56px;
-  height: 56px;
+  width: 60px;
+  height: 60px;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  color: #ef4444;
-  background-color: white;
+  font-size: 1.75rem;
+  color: #f43f5e;
+  box-shadow: var(--shadow-md);
 }
 
 .btn-danger-custom {
-  background-color: #ef4444;
+  background: var(--grad-error);
   color: white;
   border: none;
-  padding: 0.75rem 1.5rem;
+  padding: 0.75rem 1.75rem;
   border-radius: 12px;
-  font-weight: 800;
-  font-size: 0.875rem;
+  font-weight: 700;
+  font-size: 0.9rem;
   transition: var(--transition);
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+  box-shadow: 0 4px 15px rgba(244, 63, 94, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .btn-danger-custom:hover {
-  background-color: #dc2626;
-  color: white;
-  transform: translateY(-1px);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(244, 63, 94, 0.4);
 }
 
 .warning-note {
-  background-color: #fffbeb;
+  background: #fffbeb;
   border: 1px solid #fef3c7;
+  padding: 1rem 1.5rem;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
-.warning-note span {
-  font-style: italic;
-  line-height: 1.5;
+.warning-note p {
+  margin: 0;
+  font-size: 0.9rem;
+  font-weight: 500;
   color: #92400e;
 }
+

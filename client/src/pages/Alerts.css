@@ -1,30 +1,32 @@
 .alerts-wrapper {
-  color: var(--text-primary);
+  animation: animate-up 0.5s ease-out;
 }
 
 .alert-header-icon-box {
-  width: 56px;
-  height: 56px;
-  background: var(--card-bg);
-  border: 1px solid var(--brand-border);
-  border-radius: 12px;
+  width: 60px;
+  height: 60px;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  color: #ef4444;
-  box-shadow: var(--shadow-enterprise);
+  font-size: 1.75rem;
+  color: #f43f5e;
+  box-shadow: var(--shadow-md);
 }
 
 .alert-stats-pill {
   display: flex;
   align-items: center;
-  background: var(--card-bg);
-  border: 1px solid var(--brand-border);
-  border-radius: 12px;
-  padding: 0.5rem 1.25rem;
-  gap: 1.25rem;
-  box-shadow: var(--shadow-enterprise);
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  padding: 0.75rem 1.5rem;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-md);
 }
 
 .pill-item {
@@ -34,69 +36,73 @@
 }
 
 .pill-value {
-  font-weight: 900;
-  font-size: 1.125rem;
+  font-weight: 700;
+  font-size: 1.25rem;
   line-height: 1;
+  color: var(--navy-900);
 }
 
 .pill-label {
-  font-size: 9px;
+  font-size: 0.65rem;
   font-weight: 800;
   text-transform: uppercase;
-  color: var(--text-secondary);
-  letter-spacing: 0.05em;
-  margin-top: 2px;
+  color: var(--text-muted);
+  letter-spacing: 0.08em;
+  margin-top: 4px;
 }
 
 .pill-divider {
   width: 1px;
   height: 24px;
-  background: var(--brand-border);
+  background: var(--border-light);
 }
 
 .alert-notice-board {
-  background: linear-gradient(135deg, rgba(239, 68, 68, 0.05) 0%, rgba(239, 68, 68, 0.02) 100%);
-  border: 1px solid rgba(239, 68, 68, 0.15);
-  border-radius: 16px;
-  padding: 1.5rem;
+  background: rgba(244, 63, 94, 0.03);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(244, 63, 94, 0.1);
+  border-radius: 20px;
+  padding: 2rem;
   display: flex;
-  gap: 1.5rem;
+  gap: 2rem;
   align-items: center;
 }
 
 .notice-icon-circle {
-  width: 44px;
-  height: 44px;
-  background: #ef4444;
+  width: 48px;
+  height: 48px;
+  background: #f43f5e;
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+  box-shadow: 0 8px 15px rgba(244, 63, 94, 0.3);
 }
 
 .notice-title {
-  font-weight: 800;
-  font-size: 0.95rem;
-  color: var(--navy);
-  margin-bottom: 0.25rem;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--navy-900);
+  margin-bottom: 0.5rem;
 }
 
 .notice-text {
-  font-size: 0.875rem;
-  color: var(--text-secondary);
+  font-size: 0.95rem;
+  color: var(--text-main);
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.6;
+  opacity: 0.8;
 }
 
 .notice-text strong {
-  color: #ef4444;
-  font-weight: 800;
+  color: #f43f5e;
+  font-weight: 700;
 }
 
 .text-amber {
   color: #f59e0b !important;
 }
+

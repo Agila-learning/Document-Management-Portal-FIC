@@ -9,7 +9,7 @@
 
 @media (min-width: 992px) {
   .navbar-custom {
-    padding-left: 260px; /* Sidebar offset */
+    padding-left: 310px; /* Sidebar width + margins */
   }
 }
 

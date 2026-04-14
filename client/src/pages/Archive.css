@@ -1,64 +1,72 @@
 .archive-wrapper {
-  color: var(--text-primary);
+  animation: animate-up 0.5s ease-out;
 }
 
 .archive-header-icon-box {
-  width: 56px;
-  height: 56px;
-  background: var(--card-bg);
-  border: 1px solid var(--brand-border);
+  width: 60px;
+  height: 60px;
+  background: var(--bg-card);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-glass);
+  border-radius: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.75rem;
+  color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.archive-info-strip {
+  background: var(--bg-card);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border-glass);
+  border-radius: 20px;
+  padding: 1.5rem 2rem;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  box-shadow: var(--shadow-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.archive-info-strip::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; width: 4px; height: 100%;
+  background: var(--grad-primary);
+}
+
+.strip-icon {
+  width: 44px;
+  height: 44px;
+  background: rgba(99, 102, 241, 0.1);
+  color: var(--primary);
   border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  box-shadow: var(--shadow-enterprise);
-}
-
-.archive-control-area {
-  background: transparent;
-}
-
-.archive-info-strip {
-  background: var(--card-bg);
-  border: 1px solid var(--brand-border);
-  border-radius: 16px;
-  padding: 1.25rem 1.5rem;
-  display: flex;
-  align-items: center;
-  gap: 1.25rem;
-  box-shadow: var(--shadow-enterprise);
-}
-
-.strip-icon {
-  width: 40px;
-  height: 40px;
-  background: var(--primary-light);
-  color: var(--primary-color);
-  border-radius: 10px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 1.125rem;
+  font-size: 1.25rem;
   flex-shrink: 0;
 }
 
 .strip-label {
   display: block;
-  font-size: 10px;
+  font-size: 0.7rem;
   font-weight: 800;
-  color: var(--navy);
+  color: var(--primary);
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  margin-bottom: 2px;
+  margin-bottom: 4px;
 }
 
 .strip-text p {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-secondary);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-main);
   margin: 0;
+  opacity: 0.8;
 }
 
 .search-box-pill {
@@ -68,35 +76,38 @@
 
 .search-pill-icon {
   position: absolute;
-  left: 18px;
+  left: 1.25rem;
   top: 50%;
   transform: translateY(-50%);
-  color: var(--text-secondary);
-  font-size: 1.125rem;
+  color: var(--primary);
+  font-size: 1.2rem;
   z-index: 10;
+  opacity: 0.7;
 }
 
 .search-pill-input {
   width: 100%;
-  height: 56px;
-  background: var(--card-bg);
-  border: 1px solid var(--brand-border);
-  border-radius: 28px;
-  padding: 0 1.5rem 0 3.5rem;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: var(--navy);
-  box-shadow: var(--shadow-enterprise);
+  height: 60px;
+  background: white;
+  border: 1px solid var(--border-light);
+  border-radius: 30px;
+  padding: 0 1.5rem 0 3.75rem;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-main);
+  box-shadow: var(--shadow-sm);
   transition: var(--transition);
   outline: none;
 }
 
 .search-pill-input:focus {
-  border-color: var(--primary-color);
-  box-shadow: 0 0 0 4px var(--primary-light);
-  background: var(--card-bg);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 5px rgba(99, 102, 241, 0.1);
+  background: white;
 }
 
 .table-container {
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
 }
+
