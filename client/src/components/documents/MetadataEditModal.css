@@ -2,6 +2,7 @@
   background: white;
   width: 100%;
   max-width: 520px;
+  max-height: 90vh;
   border-radius: 20px;
   box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.3);
   display: flex;
@@ -9,14 +10,25 @@
   overflow: hidden;
 }
 
+.modal-small-content .modal-custom-body {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+
+.modal-small-content .modal-footer {
+  position: sticky;
+  bottom: 0;
+  background-color: #f8fafc;
+  padding: 1rem 1.5rem !important;
+  border-top: 1px solid var(--brand-border);
+  z-index: 10;
+}
+
 .edit-success-state .success-icon-box {
   background-color: #ecfdf5;
   color: #059669;
   border: 1px solid #d1fae5;
-}
-
-.modal-footer {
-  background-color: #f8fafc;
 }
 
 .modal-small-content .form-control-custom,

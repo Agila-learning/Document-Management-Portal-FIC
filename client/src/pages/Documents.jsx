@@ -65,11 +65,25 @@ const Documents = () => {
     }
   };
 
-  const handleDownload = (doc) => {
-    const normalized = doc.filePath.replace(/\\/g, '/');
-    const afterUploads = normalized.split('uploads/').slice(1).join('uploads/');
-    const url = `${BASE_URL}/uploads/${afterUploads}`;
-    window.open(url, '_blank');
+  const handleDownload = async (doc) => {
+    try {
+      const normalized = doc.filePath.replace(/\\/g, '/');
+      const afterUploads = normalized.split('uploads/').slice(1).join('uploads/');
+      const url = `${BASE_URL}/uploads/${afterUploads}`;
+      const response = await fetch(url);
+      const blob = await response.blob();
+      const blobUrl = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = doc.title + (doc.fileType || '');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(blobUrl);
+    } catch (error) {
+      console.error('Download failed:', error);
+      alert('Failed to download file');
+    }
   };
 
 

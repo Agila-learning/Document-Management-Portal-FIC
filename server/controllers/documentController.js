@@ -100,7 +100,7 @@ exports.getDocuments = async (req, res) => {
 // @access  Private
 exports.updateDocument = async (req, res) => {
     try {
-        const { title, category, description, status, isStarred, isPinned, confidentiality, companyName } = req.body;
+        const { title, category, description, status, isStarred, isPinned, confidentiality, companyName, expiryDate } = req.body;
         
         const document = await Document.findById(req.params.id);
 
@@ -110,10 +110,15 @@ exports.updateDocument = async (req, res) => {
 
         document.title = title || document.title;
         document.category = category || document.category;
-        document.description = description || document.description;
+        document.description = description !== undefined ? description : document.description;
         document.status = status || document.status;
         document.confidentiality = confidentiality || document.confidentiality;
         document.companyName = companyName || document.companyName;
+        
+        // Handle expiryDate - allow setting, updating, and clearing
+        if (expiryDate !== undefined) {
+            document.expiryDate = expiryDate && expiryDate !== '' ? new Date(expiryDate) : null;
+        }
         
         if (isStarred !== undefined) document.isStarred = isStarred;
         if (isPinned !== undefined) document.isPinned = isPinned;

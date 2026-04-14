@@ -12,8 +12,8 @@
 /* Offset main content by sidebar width on desktop */
 @media (min-width: 992px) {
   .main-viewport {
-    margin-left: 240px;
-    width: calc(100% - 240px);
+    margin-left: 260px;
+    width: calc(100% - 260px);
   }
 }
 
