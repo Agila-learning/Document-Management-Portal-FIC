@@ -34,6 +34,12 @@
   background: var(--card-bg);
 }
 
+.brand-logo-img {
+  max-height: 45px;
+  max-width: 180px;
+  object-fit: contain;
+}
+
 .brand-wrapper {
   display: flex;
   align-items: center;

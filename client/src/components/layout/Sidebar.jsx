@@ -32,10 +32,6 @@ const Sidebar = ({ isOpen, onClose }) => {
       <div className="sidebar-header">
         <div className="brand-wrapper">
           <img src="/assets/Updated-Logo.jpeg" alt="FIC Logo" className="brand-logo-img" />
-          <div className="brand-text-block">
-            <h1 className="brand-title">Forge India</h1>
-            <span className="brand-subtitle">Connect</span>
-          </div>
         </div>
         <button className="btn-close-sidebar d-lg-none" onClick={onClose}>
           <FiX />
