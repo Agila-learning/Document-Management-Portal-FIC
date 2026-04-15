@@ -8,11 +8,30 @@ if (dns.setDefaultResultOrder) {
 
 // Create reusable transporter
 const createTransporter = () => {
+    // If it's a Gmail connection, strictly force Port 587 (STARTTLS) and generic IPv4
+    const isGmail = !process.env.SMTP_HOST || process.env.SMTP_HOST.includes('gmail');
+    
+    if (isGmail) {
+        return nodemailer.createTransport({
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // Must be false for port 587 (uses STARTTLS)
+            requireTLS: true,
+            auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS
+            },
+            tls: {
+                rejectUnauthorized: false
+            }
+        });
+    }
+
+    // Custom fallback
     return nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT) || 587,
-        secure: false, // Use STARTTLS on 587 instead of forced port 465
-        requireTLS: true,
+        secure: parseInt(process.env.SMTP_PORT) === 465,
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
