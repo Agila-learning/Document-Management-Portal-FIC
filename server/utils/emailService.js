@@ -8,25 +8,17 @@ if (dns.setDefaultResultOrder) {
 
 // Create reusable transporter
 const createTransporter = () => {
-    const isGmail = !process.env.SMTP_HOST || process.env.SMTP_HOST.includes('gmail');
-    
-    if (isGmail) {
-        return nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASS
-            }
-        });
-    }
-
     return nodemailer.createTransport({
-        host: process.env.SMTP_HOST,
+        host: process.env.SMTP_HOST || 'smtp.gmail.com',
         port: parseInt(process.env.SMTP_PORT) || 587,
-        secure: parseInt(process.env.SMTP_PORT) === 465, // true for 465, false for other ports
+        secure: false, // Use STARTTLS on 587 instead of forced port 465
+        requireTLS: true,
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
+        },
+        tls: {
+            rejectUnauthorized: false
         }
     });
 };
