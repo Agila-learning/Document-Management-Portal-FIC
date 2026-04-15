@@ -1,4 +1,10 @@
 const nodemailer = require('nodemailer');
+const dns = require('dns');
+
+// Force IPv4 resolution to prevent Render IPv6 ENETUNREACH issues
+if (dns.setDefaultResultOrder) {
+    dns.setDefaultResultOrder('ipv4first');
+}
 
 // Create reusable transporter
 const createTransporter = () => {
