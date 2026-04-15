@@ -22,8 +22,8 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: 'Trash', icon: FiTrash2, path: '/trash' },
   ];
 
-  // Antigraviity Exclusive Items
-  if (activeCompany === 'Antigraviity') {
+  // Company-Specific Items
+  if (activeCompany && activeCompany !== 'All') {
     menuItems.splice(4, 0, 
       { label: 'Employees', icon: FiUserCheck, path: '/employees' },
       { label: 'Payroll', icon: FiCreditCard, path: '/payroll' }

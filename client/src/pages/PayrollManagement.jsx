@@ -4,9 +4,11 @@ import {
   FiCheckCircle, FiClock, FiPlus, FiFilter 
 } from 'react-icons/fi';
 import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import EmptyState from '../components/common/EmptyState';
 
 const PayrollManagement = () => {
+  const { activeCompany } = useAuth();
   const [records, setRecords] = useState([]);
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -34,7 +36,7 @@ const PayrollManagement = () => {
     try {
       const [payrollRes, employeeRes] = await Promise.all([
         api.get('/payroll', { params: { month: selectedMonth, year: selectedYear } }),
-        api.get('/employees', { params: { companyName: 'Antigraviity' } })
+        api.get('/employees', { params: { companyName: activeCompany } })
       ]);
       setRecords(payrollRes.data);
       setEmployees(employeeRes.data);

@@ -4,10 +4,12 @@ import {
   FiMail, FiPhone, FiCalendar, FiDollarSign 
 } from 'react-icons/fi';
 import api from '../utils/api';
+import { useAuth } from '../context/AuthContext';
 import EmptyState from '../components/common/EmptyState';
 import './Candidates.css'; // Reusing candidate styles for consistency
 
 const EmployeeDirectory = () => {
+  const { activeCompany } = useAuth();
   const [employees, setEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,7 +27,7 @@ const EmployeeDirectory = () => {
     setLoading(true);
     try {
       const { data } = await api.get('/employees', { 
-        params: { companyName: 'Antigraviity' } 
+        params: { companyName: activeCompany } 
       });
       setEmployees(data);
     } catch (error) {
@@ -42,7 +44,7 @@ const EmployeeDirectory = () => {
   const handleCreateEmployee = async (e) => {
     e.preventDefault();
     try {
-      await api.post('/employees', { ...newEmployee, companyName: 'Antigraviity' });
+      await api.post('/employees', { ...newEmployee, companyName: activeCompany });
       setIsAddModalOpen(false);
       setNewEmployee({
         fullName: '',
@@ -68,7 +70,7 @@ const EmployeeDirectory = () => {
     <div className="candidates-wrapper animate-fade">
       <div className="page-header d-flex justify-content-between align-items-center mb-5">
         <div>
-          <h1 className="h3 font-extrabold text-navy m-0">Antigraviity Personnel</h1>
+          <h1 className="h3 font-extrabold text-navy m-0">{activeCompany} Personnel</h1>
           <p className="text-secondary small mt-1">Manage active staff members and official records</p>
         </div>
         <button className="btn btn-primary-custom d-flex align-items-center gap-2" onClick={() => setIsAddModalOpen(true)}>
