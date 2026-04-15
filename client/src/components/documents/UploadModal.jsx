@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FiX, FiUploadCloud, FiFile, FiCheck, FiLoader, FiInfo } from 'react-icons/fi';
+import { FiX, FiUploadCloud, FiFile, FiCheck, FiLoader, FiInfo, FiLock, FiUnlock } from 'react-icons/fi';
 import api from '../../utils/api';
 import './UploadModal.css';
 
@@ -11,8 +11,10 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
     category: 'MOU',
     description: '',
     confidentiality: 'Internal',
-    expiryDate: ''
+    expiryDate: '',
+    password: ''
   });
+  const [showPasswordField, setShowPasswordField] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [success, setSuccess] = useState(false);
   const [noExpiry, setNoExpiry] = useState(false);
@@ -49,6 +51,9 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
     if (!noExpiry && metadata.expiryDate) {
       formData.append('expiryDate', metadata.expiryDate);
     }
+    if (showPasswordField && metadata.password) {
+      formData.append('password', metadata.password);
+    }
 
     try {
       await api.post('/documents/upload', formData, {
@@ -76,10 +81,12 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
       category: 'MOU', 
       description: '', 
       confidentiality: 'Internal',
-      expiryDate: '' 
+      expiryDate: '',
+      password: '' 
     });
     setSuccess(false);
     setNoExpiry(false);
+    setShowPasswordField(false);
   };
 
   if (!isOpen) return null;
@@ -248,6 +255,42 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
                   )}
                   {noExpiry && (
                     <div className="no-expiry-badge">Document has no expiry date</div>
+                  )}
+                </div>
+              </div>
+
+              <div className="col-12">
+                <div className="form-group-custom bg-light-soft p-3 rounded-4 border border-dashed">
+                  <div className="d-flex align-items-center justify-content-between mb-2">
+                    <label className="d-flex align-items-center gap-2 m-0 p-0" style={{cursor:'pointer', fontWeight:700, fontSize:'0.85rem', color:'var(--navy)'}}>
+                      <FiLock className="text-primary" />
+                      Password Protection
+                    </label>
+                    <div className="form-check form-switch m-0">
+                      <input 
+                        className="form-check-input" 
+                        type="checkbox" 
+                        id="flexSwitchCheckDefault"
+                        checked={showPasswordField}
+                        onChange={(e) => setShowPasswordField(e.target.checked)}
+                      />
+                    </div>
+                  </div>
+                  <p className="tiny text-secondary mb-3">Enable this to restrict access to this document via a custom password.</p>
+                  
+                  {showPasswordField && (
+                    <div className="animate-fade">
+                      <input 
+                        type="password" 
+                        placeholder="Enter secure password..." 
+                        className="form-control-custom w-100 bg-white"
+                        value={metadata.password}
+                        onChange={e => setMetadata({...metadata, password: e.target.value})}
+                      />
+                      <div className="mt-2 d-flex align-items-center gap-2 tiny text-amber font-bold">
+                        <FiInfo /> Remember this password. It cannot be recovered if lost.
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>

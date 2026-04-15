@@ -5,7 +5,8 @@ const {
     getDocuments, 
     updateDocument, 
     deleteDocument,
-    permanentDeleteDocument
+    permanentDeleteDocument,
+    verifyDocumentPassword
 } = require('../controllers/documentController');
 const { protect, authorize } = require('../middleware/authMiddleware');
 const upload = require('../middleware/uploadMiddleware');
@@ -15,5 +16,6 @@ router.get('/', protect, getDocuments);
 router.put('/:id', protect, authorize('Super Admin', 'Admin', 'HR', 'Document Manager'), updateDocument);
 router.delete('/:id/permanent', protect, authorize('Super Admin', 'Admin'), permanentDeleteDocument);
 router.delete('/:id', protect, authorize('Super Admin', 'Admin', 'Document Manager'), deleteDocument);
+router.post('/:id/verify-password', protect, verifyDocumentPassword);
 
 module.exports = router;

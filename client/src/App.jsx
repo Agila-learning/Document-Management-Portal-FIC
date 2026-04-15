@@ -13,6 +13,8 @@ import Alerts from './pages/Alerts';
 import Archive from './pages/Archive';
 import RecycleBin from './pages/RecycleBin';
 import Settings from './pages/Settings';
+import EmployeeDirectory from './pages/EmployeeDirectory';
+import PayrollManagement from './pages/PayrollManagement';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -58,6 +60,24 @@ function App() {
             element={
               <ProtectedRoute>
                 <Candidates />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/employees" 
+            element={
+              <ProtectedRoute>
+                <EmployeeDirectory />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/payroll" 
+            element={
+              <ProtectedRoute>
+                <PayrollManagement />
               </ProtectedRoute>
             } 
           />

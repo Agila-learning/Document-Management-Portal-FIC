@@ -38,8 +38,14 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  const [activeCompany, setActiveCompany] = useState(localStorage.getItem('activeCompany') || 'All');
+
+  useEffect(() => {
+    localStorage.setItem('activeCompany', activeCompany);
+  }, [activeCompany]);
+
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading }}>
+    <AuthContext.Provider value={{ user, login, logout, activeCompany, setActiveCompany, loading }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,6 +2,7 @@ const Document = require('../models/Document');
 const ActivityLog = require('../models/ActivityLog');
 const path = require('path');
 const fs = require('fs');
+const bcrypt = require('bcryptjs');
 
 // @desc    Upload a document
 // @route   POST /api/documents/upload
@@ -12,9 +13,9 @@ exports.uploadDocument = async (req, res) => {
             return res.status(400).json({ message: 'No file uploaded' });
         }
 
-        const { title, category, description, tags, candidateId, companyName, clientName, confidentiality, expiryDate } = req.body;
+        const { title, category, description, tags, candidateId, companyName, clientName, confidentiality, expiryDate, password } = req.body;
 
-        const document = await Document.create({
+        const docData = {
             title: title || req.file.originalname,
             category,
             description,
@@ -28,7 +29,16 @@ exports.uploadDocument = async (req, res) => {
             clientName,
             confidentiality,
             expiryDate: expiryDate && expiryDate !== '' ? new Date(expiryDate) : undefined
-        });
+        };
+
+        // Hash password if provided
+        if (password && password.trim() !== '') {
+            const salt = await bcrypt.genSalt(10);
+            docData.password = await bcrypt.hash(password, salt);
+            docData.isProtected = true;
+        }
+
+        const document = await Document.create(docData);
 
         // Log Activity
         await ActivityLog.create({
@@ -201,6 +211,34 @@ exports.permanentDeleteDocument = async (req, res) => {
         });
 
         res.json({ message: 'Document permanently removed' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Verify document password
+// @route   POST /api/documents/:id/verify-password
+// @access  Private
+exports.verifyDocumentPassword = async (req, res) => {
+    try {
+        const { password } = req.body;
+        const document = await Document.findById(req.params.id).select('+password');
+
+        if (!document) {
+            return res.status(404).json({ message: 'Document not found' });
+        }
+
+        if (!document.password) {
+            return res.status(400).json({ message: 'Document is not password protected' });
+        }
+
+        const isMatch = await bcrypt.compare(password, document.password);
+
+        if (!isMatch) {
+            return res.status(401).json({ message: 'Invalid password' });
+        }
+
+        res.json({ success: true, message: 'Password verified' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

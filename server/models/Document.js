@@ -62,6 +62,14 @@ const documentSchema = new mongoose.Schema({
     isPinned: {
         type: Boolean,
         default: false
+    },
+    password: {
+        type: String, // Hashed password for protection
+        select: false // Don't return by default for security
+    },
+    isProtected: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

@@ -6,6 +6,7 @@ import DocumentTable from '../components/documents/DocumentTable';
 import UploadModal from '../components/documents/UploadModal';
 import DocumentPreviewModal from '../components/documents/DocumentPreviewModal';
 import MetadataEditModal from '../components/documents/MetadataEditModal';
+import PasswordPromptModal from '../components/documents/PasswordPromptModal';
 import LoadingOverlay from '../components/common/LoadingOverlay';
 import './Documents.css';
 
@@ -26,6 +27,9 @@ const Documents = () => {
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
+  
+  const [isUnlockOpen, setIsUnlockOpen] = useState(false);
+  const [pendingAction, setPendingAction] = useState(null); // { type: 'preview' | 'download', doc: object }
 
   const fetchDocuments = async () => {
     setLoading(true);
@@ -84,6 +88,23 @@ const Documents = () => {
       console.error('Download failed:', error);
       alert('Failed to download file');
     }
+  };
+
+  const handleActionIntercept = (doc, type) => {
+    setSelectedDoc(doc);
+    if (doc.isProtected) {
+      setPendingAction({ type, doc });
+      setIsUnlockOpen(true);
+    } else {
+      if (type === 'preview') setIsPreviewOpen(true);
+      if (type === 'download') handleDownload(doc);
+    }
+  };
+
+  const onPasswordVerified = () => {
+    if (pendingAction.type === 'preview') setIsPreviewOpen(true);
+    if (pendingAction.type === 'download') handleDownload(pendingAction.doc);
+    setPendingAction(null);
   };
 
 
@@ -185,10 +206,10 @@ const Documents = () => {
         ) : (
           <DocumentTable 
             documents={documents} 
-            onPreview={(doc) => { setSelectedDoc(doc); setIsPreviewOpen(true); }}
+            onPreview={(doc) => handleActionIntercept(doc, 'preview')}
             onEdit={(doc) => { setSelectedDoc(doc); setIsEditOpen(true); }}
             onDelete={handleDelete}
-            onDownload={handleDownload}
+            onDownload={(doc) => handleActionIntercept(doc, 'download')}
           />
         )}
       </div>
@@ -211,6 +232,13 @@ const Documents = () => {
         onClose={() => setIsEditOpen(false)}
         document={selectedDoc}
         onUpdateSuccess={fetchDocuments}
+      />
+
+      <PasswordPromptModal 
+        isOpen={isUnlockOpen}
+        onClose={() => setIsUnlockOpen(false)}
+        documentId={selectedDoc?._id}
+        onVerified={onPasswordVerified}
       />
     </div>
   );

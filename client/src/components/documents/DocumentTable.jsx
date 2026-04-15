@@ -1,7 +1,7 @@
 import React from 'react';
 import { 
   FiFile, FiEye, FiDownload, FiEdit2, FiTrash2, 
-  FiFileText, FiImage 
+  FiFileText, FiImage, FiLock
 } from 'react-icons/fi';
 import EmptyState from '../common/EmptyState';
 import './DocumentTable.css';
@@ -57,7 +57,10 @@ const DocumentTable = ({ documents, onPreview, onEdit, onDelete, onDownload }) =
                     {getFileIcon(doc.fileType)}
                   </div>
                   <div className="d-flex flex-column">
-                    <span className="doc-title-row">{doc.title}</span>
+                    <span className="doc-title-row">
+                      {doc.title}
+                      {doc.isProtected && <FiLock className="ms-2 text-primary tiny-icon" title="Password Protected" />}
+                    </span>
                     <span className="doc-ext-row">{doc.fileType?.replace('.', '') || 'FILE'}</span>
                   </div>
                 </div>

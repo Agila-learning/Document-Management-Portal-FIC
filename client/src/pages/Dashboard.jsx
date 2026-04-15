@@ -13,7 +13,7 @@ const Dashboard = () => {
   const [stats, setStats] = useState(null);
   const [activity, setActivity] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedCompany, setSelectedCompany] = useState('All');
+  const { activeCompany, setActiveCompany } = useAuth();
   const navigate = useNavigate();
 
   const companies = ['All', 'Skilnexia', 'Antigraviity', 'Forge India Connect'];
@@ -23,7 +23,7 @@ const Dashboard = () => {
       setLoading(true);
       try {
         const [statsRes, activityRes] = await Promise.all([
-          api.get('/stats/dashboard', { params: { companyName: selectedCompany } }),
+          api.get('/stats/dashboard', { params: { companyName: activeCompany } }),
           api.get('/activity/recent')
         ]);
         setStats(statsRes.data);
@@ -35,7 +35,7 @@ const Dashboard = () => {
       }
     };
     fetchDashboardData();
-  }, [selectedCompany]);
+  }, [activeCompany]);
 
   const statCards = [
     { 
@@ -82,8 +82,8 @@ const Dashboard = () => {
           <span className="font-bold text-navy small text-uppercase tracking-wider">Workspace:</span>
           <select 
             className="form-select-custom border-0 bg-transparent fw-semibold"
-            value={selectedCompany}
-            onChange={(e) => setSelectedCompany(e.target.value)}
+            value={activeCompany}
+            onChange={(e) => setActiveCompany(e.target.value)}
           >
             {companies.map(comp => <option key={comp} value={comp}>{comp}</option>)}
           </select>

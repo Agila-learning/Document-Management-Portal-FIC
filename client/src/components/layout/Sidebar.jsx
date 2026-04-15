@@ -2,13 +2,14 @@ import React from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   FiHome, FiFileText, FiFolder, FiUsers, FiAlertCircle, 
-  FiArchive, FiTrash2, FiSettings, FiLogOut, FiX 
+  FiArchive, FiTrash2, FiSettings, FiLogOut, FiX,
+  FiCreditCard, FiUserCheck
 } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
 
 const Sidebar = ({ isOpen, onClose }) => {
-  const { logout } = useAuth();
+  const { logout, activeCompany } = useAuth();
   const navigate = useNavigate();
 
   const menuItems = [
@@ -20,6 +21,14 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: 'Archive', icon: FiArchive, path: '/archive' },
     { label: 'Trash', icon: FiTrash2, path: '/trash' },
   ];
+
+  // Antigraviity Exclusive Items
+  if (activeCompany === 'Antigraviity') {
+    menuItems.splice(4, 0, 
+      { label: 'Employees', icon: FiUserCheck, path: '/employees' },
+      { label: 'Payroll', icon: FiCreditCard, path: '/payroll' }
+    );
+  }
 
   const handleLogout = () => {
     logout();
