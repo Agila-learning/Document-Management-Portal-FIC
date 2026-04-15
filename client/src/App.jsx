@@ -15,6 +15,7 @@ import RecycleBin from './pages/RecycleBin';
 import Settings from './pages/Settings';
 import EmployeeDirectory from './pages/EmployeeDirectory';
 import PayrollManagement from './pages/PayrollManagement';
+import SendMail from './pages/SendMail';
 
 const ProtectedRoute = ({ children }) => {
   const { user, loading } = useAuth();
@@ -60,6 +61,15 @@ function App() {
             element={
               <ProtectedRoute>
                 <Candidates />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/send-mail" 
+            element={
+              <ProtectedRoute>
+                <SendMail />
               </ProtectedRoute>
             } 
           />

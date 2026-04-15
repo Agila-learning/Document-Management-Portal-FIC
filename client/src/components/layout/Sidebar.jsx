@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { 
   FiHome, FiFileText, FiFolder, FiUsers, FiAlertCircle, 
   FiArchive, FiTrash2, FiSettings, FiLogOut, FiX,
-  FiCreditCard, FiUserCheck
+  FiCreditCard, FiUserCheck, FiMail
 } from 'react-icons/fi';
 import { useAuth } from '../../context/AuthContext';
 import './Sidebar.css';
@@ -17,6 +17,7 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: 'Documents', icon: FiFileText, path: '/documents' },
     { label: 'Categories', icon: FiFolder, path: '/categories' },
     { label: 'Candidates', icon: FiUsers, path: '/candidates' },
+    { label: 'Send Mail', icon: FiMail, path: '/send-mail' },
     { label: 'Alerts', icon: FiAlertCircle, path: '/alerts' },
     { label: 'Archive', icon: FiArchive, path: '/archive' },
     { label: 'Trash', icon: FiTrash2, path: '/trash' },

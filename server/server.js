@@ -116,6 +116,7 @@ app.use('/api/employees', require('./routes/employeeRoutes'));
 app.use('/api/payroll', require('./routes/payrollRoutes'));
 app.use('/api/activity', require('./routes/activityRoutes'));
 app.use('/api/stats', require('./routes/statsRoutes'));
+app.use('/api/mail', require('./routes/mailRoutes'));
 
 // 404 Handler for API
 app.use((req, res, next) => {

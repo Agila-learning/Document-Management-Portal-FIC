@@ -1,0 +1,62 @@
+.sendmail-wrapper {
+  color: var(--text-primary);
+}
+
+.purpose-pill-container {
+  margin-top: 0.5rem;
+}
+
+.purpose-pill {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  background: var(--input-bg);
+  border: 1px solid var(--brand-border);
+  color: var(--text-secondary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.purpose-pill:hover {
+  background: var(--card-bg);
+  border-color: var(--primary-color);
+  color: var(--navy);
+}
+
+.purpose-pill.active {
+  background: var(--primary-color);
+  color: white;
+  border-color: var(--primary-color);
+  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2);
+}
+
+.bg-success-light {
+  background-color: rgba(16, 185, 129, 0.1);
+}
+
+.autocomplete-dropdown {
+  background: var(--card-bg);
+  border: 1px solid var(--brand-border);
+  border-radius: 8px;
+  box-shadow: var(--shadow-enterprise);
+}
+
+.autocomplete-dropdown .list-group-item {
+  background: transparent;
+  color: var(--text-primary);
+  transition: var(--transition);
+}
+
+.autocomplete-dropdown .list-group-item:hover {
+  background: var(--input-bg);
+}
+
+.history-item {
+  transition: var(--transition);
+}
+
+.history-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
