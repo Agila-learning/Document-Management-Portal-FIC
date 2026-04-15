@@ -9,11 +9,11 @@ const activityLogSchema = new mongoose.Schema({
     action: {
         type: String,
         required: true,
-        enum: ['UPLOAD', 'EDIT', 'DELETE', 'VIEW', 'DOWNLOAD', 'LOGIN', 'LOGOUT', 'RENAME', 'MOVE', 'VERIFY', 'RESTORE']
+        enum: ['UPLOAD', 'EDIT', 'DELETE', 'VIEW', 'DOWNLOAD', 'LOGIN', 'LOGOUT', 'RENAME', 'MOVE', 'VERIFY', 'RESTORE', 'EMAIL']
     },
     targetType: {
         type: String,
-        enum: ['Document', 'Candidate', 'User', 'System', 'Employee', 'Payroll'],
+        enum: ['Document', 'Candidate', 'User', 'System', 'Employee', 'Payroll', 'Mail'],
         required: true
     },
     targetId: {
