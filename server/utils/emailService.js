@@ -2,10 +2,22 @@ const nodemailer = require('nodemailer');
 
 // Create reusable transporter
 const createTransporter = () => {
+    const isGmail = !process.env.SMTP_HOST || process.env.SMTP_HOST.includes('gmail');
+    
+    if (isGmail) {
+        return nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASS
+            }
+        });
+    }
+
     return nodemailer.createTransport({
-        host: process.env.SMTP_HOST || 'smtp.gmail.com',
+        host: process.env.SMTP_HOST,
         port: parseInt(process.env.SMTP_PORT) || 587,
-        secure: false,
+        secure: parseInt(process.env.SMTP_PORT) === 465, // true for 465, false for other ports
         auth: {
             user: process.env.SMTP_USER,
             pass: process.env.SMTP_PASS
