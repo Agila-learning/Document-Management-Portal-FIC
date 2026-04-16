@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   FiUserPlus, FiSearch, FiFilter, FiMoreVertical, 
-  FiMail, FiPhone, FiCalendar, FiDollarSign 
+  FiMail, FiCalendar, FiDollarSign 
 } from 'react-icons/fi';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import EmptyState from '../components/common/EmptyState';
 import UploadModal from '../components/documents/UploadModal';
 import DocumentTable from '../components/documents/DocumentTable';
-import './Candidates.css'; // Reusing candidate styles for consistency
+import './EmployeeDirectory.css';
 
 const EmployeeDirectory = () => {
   const { activeCompany } = useAuth();
@@ -103,11 +103,12 @@ const EmployeeDirectory = () => {
   );
 
   return (
-    <div className="candidates-wrapper animate-fade">
-      <div className="page-header d-flex justify-content-between align-items-center mb-5">
+    <div className="employees-container animate-fade">
+      {/* 5. Header Alignment */}
+      <div className="directory-header mb-5">
         <div>
-          <h1 className="h3 font-extrabold text-navy m-0">{activeCompany} Personnel</h1>
-          <p className="text-secondary small mt-1">Manage active staff members and official records</p>
+          <h1 className="directory-title">{activeCompany} Personnel</h1>
+          <p className="directory-subtitle">Manage active staff members and official records</p>
         </div>
         <button className="btn btn-primary-custom d-flex align-items-center gap-2" onClick={() => setIsAddModalOpen(true)}>
           <FiUserPlus />
@@ -115,80 +116,85 @@ const EmployeeDirectory = () => {
         </button>
       </div>
 
-      <div className="search-filter-section mb-4">
-        <div className="row g-3">
-          <div className="col-12 col-md-8">
-            <div className="search-box-custom">
-              <FiSearch className="search-icon" />
-              <input 
-                type="text" 
-                placeholder="Search by name, email or designation..." 
-                className="search-input"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-          </div>
-          <div className="col-12 col-md-4">
-            <button className="btn btn-outline-secondary-custom w-100 d-flex align-items-center justify-content-center gap-2">
-              <FiFilter />
-              <span>Advanced Filters</span>
-            </button>
+      {/* 1. Search Bar Alignment */}
+      <div className="directory-actions-bar">
+        <div className="search-wrapper-full">
+          <div className="search-box-large">
+            <FiSearch className="search-icon-large" />
+            <input 
+              type="text" 
+              placeholder="Search by name, email or designation..." 
+              className="search-input-large"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
           </div>
         </div>
+        <button className="btn btn-light-custom d-flex align-items-center gap-2 py-2 px-4">
+          <FiFilter />
+          <span className="font-bold">Filters</span>
+        </button>
       </div>
 
       {loading ? (
-        <div className="text-center py-10">Loading personnel records...</div>
+        <div className="text-center py-10">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="mt-3 text-secondary font-bold">Syncing personnel records...</p>
+        </div>
       ) : filteredEmployees.length > 0 ? (
-        <div className="row g-4">
+        /* 2. Grid Layout Fix */
+        <div className="employee-grid">
           {filteredEmployees.map((emp) => (
-            <div className="col-12 col-md-6 col-lg-4" key={emp._id}>
-              <div className="candidate-card">
-                <div className="d-flex justify-content-between mb-3">
-                  <div className="d-flex align-items-center gap-3">
-                    <div className="avatar-placeholder">
-                      {emp.fullName.charAt(0)}
-                    </div>
-                    <div>
-                      <h3 className="candidate-name">{emp.fullName}</h3>
-                      <span className="candidate-spec">{emp.designation}</span>
-                    </div>
+            /* 4. Card Styling Improvements */
+            <div className="employee-card" key={emp._id}>
+              {/* 3. Employee Card Alignment - Top Row */}
+              <div className="card-header-main">
+                <div className="employee-profile-box">
+                  <div className="employee-avatar-lg">
+                    {emp.fullName.charAt(0)}
                   </div>
-                  <button className="btn-icon-only">
-                    <FiMoreVertical />
-                  </button>
-                </div>
-                
-                <div className="candidate-meta-list mb-4">
-                  <div className="meta-item">
-                    <FiMail />
-                    <span>{emp.email}</span>
-                  </div>
-                  <div className="meta-item">
-                    <FiCalendar />
-                    <span>Joined: {new Date(emp.joiningDate).toLocaleDateString()}</span>
-                  </div>
-                  <div className="meta-item">
-                    <FiDollarSign />
-                    <span>Base Salary: ₹{emp.baseSalary?.toLocaleString()}</span>
+                  <div className="employee-info-text">
+                    <h3 className="emp-name">{emp.fullName}</h3>
+                    <span className="emp-role">{emp.designation}</span>
                   </div>
                 </div>
+                <button className="card-menu-btn">
+                  <FiMoreVertical />
+                </button>
+              </div>
+              
+              {/* 3. Employee Card Alignment - Middle Section */}
+              <div className="card-details-list">
+                <div className="detail-row">
+                  <FiMail className="detail-icon" />
+                  <span className="text-truncate">{emp.email}</span>
+                </div>
+                <div className="detail-row">
+                  <FiCalendar className="detail-icon" />
+                  <span>Joined <span className="detail-label">{new Date(emp.joiningDate).toLocaleDateString()}</span></span>
+                </div>
+                <div className="detail-row">
+                  <FiDollarSign className="detail-icon" />
+                  <span>Salary: <span className="detail-label">₹{emp.baseSalary?.toLocaleString()}</span></span>
+                </div>
+              </div>
 
-                <div className="d-flex gap-2">
-                  <button 
-                    className="btn btn-outline-primary-custom flex-grow-1 py-2"
-                    onClick={() => handleSendMail(emp)}
-                  >
-                    Send Email
-                  </button>
-                  <button 
-                    className="btn btn-primary-custom flex-grow-1 py-2"
-                    onClick={() => handleOpenDocs(emp)}
-                  >
-                    Documents
-                  </button>
-                </div>
+              {/* 3. Employee Card Alignment - Bottom Section */}
+              <div className="card-footer-actions">
+                <button 
+                  className="btn-card-action btn-card-outline"
+                  onClick={() => handleSendMail(emp)}
+                >
+                  <FiMail /> Send Email
+                </button>
+                <button 
+                  className="btn-card-action btn-card-solid"
+                  onClick={() => handleOpenDocs(emp)}
+                >
+                  <FiCalendar /> Documents
+                </button>
               </div>
             </div>
           ))}
@@ -203,7 +209,7 @@ const EmployeeDirectory = () => {
         </div>
       )}
 
-      {/* Employee Documents Modal */}
+      {/* Modals remain structurally similar but within the new container */}
       {isDocModalOpen && selectedEmployee && (
         <div className="modal-overlay" onClick={() => setIsDocModalOpen(false)}>
           <div className="modal-content animate-slideUp" style={{ width: '900px', maxWidth: '95vw' }} onClick={e => e.stopPropagation()}>
@@ -240,7 +246,6 @@ const EmployeeDirectory = () => {
         </div>
       )}
 
-      {/* Upload Modal Integration */}
       <UploadModal 
         isOpen={isUploadOpen}
         onClose={() => setIsUploadOpen(false)}
@@ -248,7 +253,6 @@ const EmployeeDirectory = () => {
         onUploadSuccess={() => fetchEmployeeDocs(selectedEmployee?._id)}
       />
 
-      {/* Add Employee Modal */}
       {isAddModalOpen && (
         <div className="modal-overlay" onClick={() => setIsAddModalOpen(false)}>
           <div className="modal-content animate-slideUp" onClick={e => e.stopPropagation()}>
@@ -259,57 +263,57 @@ const EmployeeDirectory = () => {
             <form onSubmit={handleCreateEmployee}>
               <div className="row g-3">
                 <div className="col-12">
-                  <label className="field-label">Full Name</label>
+                  <label className="field-label-custom">Full Name</label>
                   <input 
                     type="text" 
-                    className="form-input-custom" 
+                    className="form-control-custom" 
                     required 
                     value={newEmployee.fullName}
                     onChange={e => setNewEmployee({...newEmployee, fullName: e.target.value})}
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="field-label">Email Address</label>
+                  <label className="field-label-custom">Email Address</label>
                   <input 
                     type="email" 
-                    className="form-input-custom" 
+                    className="form-control-custom" 
                     required 
                     value={newEmployee.email}
                     onChange={e => setNewEmployee({...newEmployee, email: e.target.value})}
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="field-label">Designation</label>
+                  <label className="field-label-custom">Designation</label>
                   <input 
                     type="text" 
-                    className="form-input-custom" 
+                    className="form-control-custom" 
                     required 
                     value={newEmployee.designation}
                     onChange={e => setNewEmployee({...newEmployee, designation: e.target.value})}
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="field-label">Joining Date</label>
+                  <label className="field-label-custom">Joining Date</label>
                   <input 
                     type="date" 
-                    className="form-input-custom" 
+                    className="form-control-custom" 
                     required 
                     value={newEmployee.joiningDate}
                     onChange={e => setNewEmployee({...newEmployee, joiningDate: e.target.value})}
                   />
                 </div>
                 <div className="col-md-6">
-                  <label className="field-label">Base Salary (Annual/Monthly)</label>
+                  <label className="field-label-custom">Base Salary</label>
                   <input 
                     type="number" 
-                    className="form-input-custom" 
+                    className="form-control-custom" 
                     required 
                     value={newEmployee.baseSalary}
                     onChange={e => setNewEmployee({...newEmployee, baseSalary: e.target.value})}
                   />
                 </div>
                 <div className="col-12 mt-4">
-                  <button type="submit" className="btn btn-primary-custom w-100 py-3">Confirm Onboarding</button>
+                  <button type="submit" className="btn btn-primary-custom w-100 py-3 font-bold">Confirm Onboarding</button>
                 </div>
               </div>
             </form>
@@ -318,38 +322,7 @@ const EmployeeDirectory = () => {
       )}
 
       <style jsx>{`
-        .modal-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(15, 23, 42, 0.4);
-          backdrop-filter: blur(4px);
-          z-index: 1100;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .modal-content {
-          background: white;
-          border-radius: 20px;
-          width: 500px;
-          max-width: 90vw;
-          padding: 32px;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-        .form-input-custom {
-          width: 100%;
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          padding: 12px 16px;
-          font-size: 0.875rem;
-          transition: all 0.2s;
-        }
-        .form-input-custom:focus {
-          border-color: #2563eb;
-          box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-          outline: none;
-        }
-        .field-label {
+        .field-label-custom {
           display: block;
           font-size: 0.75rem;
           font-weight: 700;
@@ -357,18 +330,6 @@ const EmployeeDirectory = () => {
           text-transform: uppercase;
           letter-spacing: 0.05em;
           margin-bottom: 8px;
-        }
-        .avatar-placeholder {
-          width: 48px;
-          height: 48px;
-          background: #f1f5f9;
-          color: #2563eb;
-          border-radius: 16px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 1.25rem;
-          font-weight: 800;
         }
       `}</style>
     </div>
