@@ -89,129 +89,131 @@ const PayrollManagement = () => {
   };
 
   return (
-    <div className="payroll-wrapper animate-fade">
-      <div className="page-header d-flex justify-content-between align-items-center mb-5">
-        <div>
-          <h1 className="h3 font-extrabold text-navy m-0">Payroll Console</h1>
-          <p className="text-secondary small mt-1">Month-wise salary maintenance and LOP tracking</p>
+    <>
+      <div className="payroll-wrapper animate-fade">
+        <div className="page-header d-flex justify-content-between align-items-center mb-5">
+          <div>
+            <h1 className="h3 font-extrabold text-navy m-0">Payroll Console</h1>
+            <p className="text-secondary small mt-1">Month-wise salary maintenance and LOP tracking</p>
+          </div>
+          <button 
+            className="btn btn-primary-custom d-flex align-items-center gap-2"
+            onClick={() => setIsLogModalOpen(true)}
+          >
+            <FiPlus />
+            <span>Generate Record</span>
+          </button>
         </div>
-        <button 
-          className="btn btn-primary-custom d-flex align-items-center gap-2"
-          onClick={() => setIsLogModalOpen(true)}
-        >
-          <FiPlus />
-          <span>Generate Record</span>
-        </button>
-      </div>
 
-      {/* Control Bar */}
-      <div className="bg-white p-3 rounded shadow-sm mb-4 d-flex justify-content-between align-items-center">
-        <div className="d-flex gap-3">
-          <div className="filter-group">
-            <label className="field-label-mini">Select Month</label>
-            <select 
-              className="form-select border-0 bg-light-soft fw-semibold"
-              value={selectedMonth}
-              onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
-            >
-              {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
-            </select>
+        {/* Control Bar */}
+        <div className="bg-white p-3 rounded shadow-sm mb-4 d-flex justify-content-between align-items-center">
+          <div className="d-flex gap-3">
+            <div className="filter-group">
+              <label className="field-label-mini">Select Month</label>
+              <select 
+                className="form-select border-0 bg-light-soft fw-semibold"
+                value={selectedMonth}
+                onChange={(e) => setSelectedMonth(parseInt(e.target.value))}
+              >
+                {months.map(m => <option key={m.value} value={m.value}>{m.label}</option>)}
+              </select>
+            </div>
+            <div className="filter-group">
+              <label className="field-label-mini">Select Year</label>
+              <select 
+                className="form-select border-0 bg-light-soft fw-semibold"
+                value={selectedYear}
+                onChange={(e) => setSelectedYear(parseInt(e.target.value))}
+              >
+                {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
+              </select>
+            </div>
+            <div className="filter-group">
+              <label className="field-label-mini">Company Workspace</label>
+              <select 
+                className="form-select border-0 bg-primary-soft text-primary fw-bold"
+                value={selectedCompany}
+                onChange={(e) => setSelectedCompany(e.target.value)}
+              >
+                {companiesList.map(comp => <option key={comp} value={comp}>{comp}</option>)}
+              </select>
+            </div>
           </div>
-          <div className="filter-group">
-            <label className="field-label-mini">Select Year</label>
-            <select 
-              className="form-select border-0 bg-light-soft fw-semibold"
-              value={selectedYear}
-              onChange={(e) => setSelectedYear(parseInt(e.target.value))}
-            >
-              {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
-            </select>
-          </div>
-          <div className="filter-group">
-            <label className="field-label-mini">Company Workspace</label>
-            <select 
-              className="form-select border-0 bg-primary-soft text-primary fw-bold"
-              value={selectedCompany}
-              onChange={(e) => setSelectedCompany(e.target.value)}
-            >
-              {companiesList.map(comp => <option key={comp} value={comp}>{comp}</option>)}
-            </select>
+          <div className="stats-mini d-flex gap-4">
+            <div className="text-end">
+              <div className="text-secondary tiny text-uppercase tracking-tighter font-bold">Total Payroll</div>
+              <div className="h5 font-extrabold text-primary m-0">₹{records.reduce((acc, curr) => acc + curr.calculatedSalary, 0).toLocaleString()}</div>
+            </div>
           </div>
         </div>
-        <div className="stats-mini d-flex gap-4">
-          <div className="text-end">
-            <div className="text-secondary tiny text-uppercase tracking-tighter font-bold">Total Payroll</div>
-            <div className="h5 font-extrabold text-primary m-0">₹{records.reduce((acc, curr) => acc + curr.calculatedSalary, 0).toLocaleString()}</div>
-          </div>
-        </div>
-      </div>
 
-      {loading ? (
-        <div className="text-center py-10">Syncing payroll data...</div>
-      ) : records.length > 0 ? (
-        <div className="card-enterprise overflow-hidden">
-          <div className="table-responsive">
-            <table className="table table-hover align-middle m-0">
-              <thead className="bg-light">
-                <tr>
-                  <th className="ps-4">Employee</th>
-                  <th>Designation</th>
-                  <th>Base Salary</th>
-                  <th>LOP Days</th>
-                  <th>Net Payable</th>
-                  <th>Status</th>
-                  <th className="text-end pe-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {records.map((rec) => (
-                  <tr key={rec._id}>
-                    <td className="ps-4">
-                      <div className="d-flex align-items-center gap-3">
-                        <div className="avatar-sm">{rec.employee?.fullName?.charAt(0)}</div>
-                        <div className="font-bold text-navy">{rec.employee?.fullName}</div>
-                      </div>
-                    </td>
-                    <td className="small font-semibold text-secondary">{rec.employee?.designation}</td>
-                    <td className="font-bold">₹{rec.baseSalary?.toLocaleString()}</td>
-                    <td>
-                      <span className={`badge ${rec.lopDays > 0 ? 'bg-danger-light text-danger' : 'bg-success-light text-success'}`}>
-                        {rec.lopDays} Days
-                      </span>
-                    </td>
-                    <td className="font-extrabold text-primary">₹{rec.calculatedSalary?.toLocaleString()}</td>
-                    <td>
-                      {rec.paymentStatus === 'Paid' ? (
-                        <span className="badge-paid"><FiCheckCircle className="me-1" /> Paid</span>
-                      ) : (
-                        <span className="badge-pending"><FiClock className="me-1" /> {rec.paymentStatus}</span>
-                      )}
-                    </td>
-                    <td className="text-end pe-4">
-                      {rec.paymentStatus !== 'Paid' && (
-                        <button 
-                          className="btn btn-sm btn-navy-custom"
-                          onClick={() => updateStatus(rec._id, 'Paid')}
-                        >
-                          Mark as Paid
-                        </button>
-                      )}
-                    </td>
+        {loading ? (
+          <div className="text-center py-10">Syncing payroll data...</div>
+        ) : records.length > 0 ? (
+          <div className="card-enterprise overflow-hidden">
+            <div className="table-responsive">
+              <table className="table table-hover align-middle m-0">
+                <thead className="bg-light">
+                  <tr>
+                    <th className="ps-4">Employee</th>
+                    <th>Designation</th>
+                    <th>Base Salary</th>
+                    <th>LOP Days</th>
+                    <th>Net Payable</th>
+                    <th>Status</th>
+                    <th className="text-end pe-4">Actions</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {records.map((rec) => (
+                    <tr key={rec._id}>
+                      <td className="ps-4">
+                        <div className="d-flex align-items-center gap-3">
+                          <div className="avatar-sm">{rec.employee?.fullName?.charAt(0)}</div>
+                          <div className="font-bold text-navy">{rec.employee?.fullName}</div>
+                        </div>
+                      </td>
+                      <td className="small font-semibold text-secondary">{rec.employee?.designation}</td>
+                      <td className="font-bold">₹{rec.baseSalary?.toLocaleString()}</td>
+                      <td>
+                        <span className={`badge ${rec.lopDays > 0 ? 'bg-danger-light text-danger' : 'bg-success-light text-success'}`}>
+                          {rec.lopDays} Days
+                        </span>
+                      </td>
+                      <td className="font-extrabold text-primary">₹{rec.calculatedSalary?.toLocaleString()}</td>
+                      <td>
+                        {rec.paymentStatus === 'Paid' ? (
+                          <span className="badge-paid"><FiCheckCircle className="me-1" /> Paid</span>
+                        ) : (
+                          <span className="badge-pending"><FiClock className="me-1" /> {rec.paymentStatus}</span>
+                        )}
+                      </td>
+                      <td className="text-end pe-4">
+                        {rec.paymentStatus !== 'Paid' && (
+                          <button 
+                            className="btn btn-sm btn-navy-custom"
+                            onClick={() => updateStatus(rec._id, 'Paid')}
+                          >
+                            Mark as Paid
+                          </button>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-      ) : (
-        <EmptyState 
-          icon={<FiDollarSign />} 
-          title="No Payroll Records" 
-          message={`We couldn't find any salary data for ${months.find(m => m.value === selectedMonth).label} ${selectedYear}.`}
-        />
-      )}
+        ) : (
+          <EmptyState 
+            icon={<FiDollarSign />} 
+            title="No Payroll Records" 
+            message={`We couldn't find any salary data for ${months.find(m => m.value === selectedMonth).label} ${selectedYear}.`}
+          />
+        )}
+      </div>
 
-      {/* Log Payroll Modal */}
+      {/* Log Payroll Modal - Moved outside payroll-wrapper to fix stacking context */}
       {isLogModalOpen && (
         <div className="modal-custom-overlay" onClick={() => setIsLogModalOpen(false)}>
           <div className="modal-custom-content animate-slideUp" style={{ width: '500px' }} onClick={e => e.stopPropagation()}>
@@ -255,6 +257,7 @@ const PayrollManagement = () => {
                       <label>Base Salary (₹)</label>
                       <input 
                         type="number" 
+                        step="any"
                         className="form-control-custom w-100" 
                         placeholder="Enter amount"
                         required
@@ -309,43 +312,8 @@ const PayrollManagement = () => {
         .avatar-sm { width: 32px; height: 32px; background: #eff6ff; color: #2563eb; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.8rem; }
         .badge-paid { background: #dcfce7; color: #15803d; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
         .badge-pending { background: #fef3c7; color: #b45309; padding: 4px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; }
-        
-        .modal-overlay {
-          position: fixed;
-          inset: 0;
-          background: rgba(15, 23, 42, 0.4);
-          backdrop-filter: blur(4px);
-          z-index: 1100;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .modal-content {
-          background: white;
-          border-radius: 20px;
-          width: 460px;
-          padding: 32px;
-          box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-        }
-        .form-input-custom {
-          width: 100%;
-          border: 1px solid #e2e8f0;
-          border-radius: 12px;
-          padding: 12px 16px;
-          font-size: 0.875rem;
-          transition: all 0.2s;
-        }
-        .field-label {
-          display: block;
-          font-size: 0.75rem;
-          font-weight: 700;
-          color: #64748b;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          margin-bottom: 8px;
-        }
       `}</style>
-    </div>
+    </>
   );
 };
 
