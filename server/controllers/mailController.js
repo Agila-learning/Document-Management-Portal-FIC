@@ -37,6 +37,12 @@ exports.sendMail = async (req, res) => {
             return res.status(400).json({ message: 'Amount is required for Payment Receipt purpose' });
         }
 
+        // Handle attachments if they exist
+        const attachments = (req.files || []).map(file => ({
+            filename: file.originalname,
+            path: file.path
+        }));
+        
         // Send the email
         const result = await sendAcknowledgementMail({
             to: candidateEmail,
@@ -44,9 +50,10 @@ exports.sendMail = async (req, res) => {
             candidateName,
             content,
             purpose: mailPurpose,
-            amountPaid: amountPaid || null,
+            amountPaid: amountPaid ? Number(amountPaid) : null,
             paymentMode: paymentMode || null,
-            transactionId: transactionId || null
+            transactionId: transactionId || null,
+            attachments: attachments
         });
 
         // Create mail log entry

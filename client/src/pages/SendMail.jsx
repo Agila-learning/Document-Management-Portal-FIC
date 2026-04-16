@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import { FiMail, FiCheckCircle, FiSend, FiFileText, FiClock, FiSearch } from 'react-icons/fi';
+import { FiMail, FiCheckCircle, FiSend, FiFileText, FiClock, FiSearch, FiPaperclip, FiX } from 'react-icons/fi';
 import api from '../utils/api';
+import { useLocation } from 'react-router-dom';
 import './SendMail.css';
 
 const SendMail = () => {
+  const location = useLocation();
   const [candidates, setCandidates] = useState([]);
+  const [employees, setEmployees] = useState([]);
   const [history, setHistory] = useState([]);
   const [loadingHistory, setLoadingHistory] = useState(true);
   
@@ -21,6 +23,9 @@ const SendMail = () => {
     subject: '',
     content: ''
   });
+  
+  const [attachments, setAttachments] = useState([]);
+  const [recipientType, setRecipientType] = useState('Candidate'); // 'Candidate' or 'Employee'
   
   const [searchTerm, setSearchTerm] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
@@ -42,6 +47,22 @@ const SendMail = () => {
       subject: 'Payment Receipt Acknowledgement',
       content: 'This email serves as a formal acknowledgement of the payment received. \n\nThe payment details have been logged in our system. Please keep this communication for your records.'
     },
+    'Onboarding': {
+      subject: 'Welcome to Forge India Connect: Onboarding Process',
+      content: 'Welcome to the team! We are excited to have you on board. \n\nPlease find attached the onboarding documents and instructions for your first week. Our HR team will assist you through the verification process.'
+    },
+    'Offer Letter': {
+      subject: 'Official Offer Letter - Forge India Connect',
+      content: 'Congratulations! We are pleased to offer you a position at Forge India Connect. \n\nPlease review the attached offer letter for details regarding your roles, responsibilities, and compensation. We look forward to your acceptance.'
+    },
+    'Termination': {
+      subject: 'Important: Employment Update Notice',
+      content: 'This email is to formally notify you regarding the status of your employment with Forge India Connect. \n\nPlease find the official documentation attached. If you have any questions, please contact the HR department.'
+    },
+    'Employee Documents Collected': {
+      subject: 'HR Records Update: Documents Received',
+      content: 'We have successfully received and updated your personnel records with the documents submitted. \n\nNo further action is required at this time.'
+    },
     'Custom': {
       subject: 'Important Communication from HR',
       content: 'Please type your custom message here...'
@@ -50,8 +71,31 @@ const SendMail = () => {
 
   useEffect(() => {
     fetchCandidates();
+    fetchEmployees();
     fetchHistory();
-  }, []);
+    
+    // Handle query param
+    const params = new URLSearchParams(location.search);
+    const empId = params.get('employeeId');
+    if (empId) {
+      setRecipientType('Employee');
+      // We'll wait for employees to load before selecting
+    }
+  }, [location]);
+
+  useEffect(() => {
+    if (employees.length > 0) {
+      const params = new URLSearchParams(location.search);
+      const empId = params.get('employeeId');
+      if (empId) {
+        const emp = employees.find(e => e._id === empId);
+        if (emp) {
+          setRecipientType('Employee');
+          handleSelectRecipient(emp, 'Employee');
+        }
+      }
+    }
+  }, [employees]);
 
   useEffect(() => {
     // Auto-update template when purpose changes
@@ -71,6 +115,15 @@ const SendMail = () => {
     }
   };
 
+  const fetchEmployees = async () => {
+    try {
+      const { data } = await api.get('/employees');
+      setEmployees(data);
+    } catch (error) {
+      console.error('Error fetching employees:', error);
+    }
+  };
+
   const fetchHistory = async () => {
     setLoadingHistory(true);
     try {
@@ -83,15 +136,15 @@ const SendMail = () => {
     }
   };
 
-  const handleSelectCandidate = (candidate) => {
-    setSelectedCandidate(candidate);
+  const handleSelectRecipient = (person, type) => {
+    setSelectedCandidate(person);
     setFormData(prev => ({
       ...prev,
-      candidateName: candidate.fullName,
-      candidateEmail: candidate.email || '',
-      candidatePhone: candidate.phone || ''
+      candidateName: person.fullName,
+      candidateEmail: person.email || '',
+      candidatePhone: person.phone || ''
     }));
-    setSearchTerm(candidate.fullName);
+    setSearchTerm(person.fullName);
     setShowDropdown(false);
   };
 
@@ -107,6 +160,15 @@ const SendMail = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+    setAttachments(prev => [...prev, ...files]);
+  };
+
+  const removeAttachment = (index) => {
+    setAttachments(prev => prev.filter((_, i) => i !== index));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSending(true);
@@ -114,10 +176,21 @@ const SendMail = () => {
     setErrorMsg('');
 
     try {
-      await api.post('/mail/send', {
-        ...formData,
-        amountPaid: formData.amountPaid ? Number(formData.amountPaid) : null,
-        mailPurpose: purpose
+      const finalFormData = new FormData();
+      
+      // Append fields
+      Object.keys(formData).forEach(key => {
+        if (formData[key]) finalFormData.append(key, formData[key]);
+      });
+      finalFormData.append('mailPurpose', purpose);
+      
+      // Append attachments
+      attachments.forEach(file => {
+        finalFormData.append('attachments', file);
+      });
+
+      await api.post('/mail/send', finalFormData, {
+        headers: { 'Content-Type': 'multipart/form-data' }
       });
       
       setSuccessMsg('Email sent successfully!');
@@ -125,9 +198,10 @@ const SendMail = () => {
       // Refresh history
       fetchHistory();
       
-      // Reset form (keep purpose)
+      // Reset form
       setSearchTerm('');
       setSelectedCandidate(null);
+      setAttachments([]);
       setFormData({
         candidateName: '',
         candidateEmail: '',
@@ -147,10 +221,15 @@ const SendMail = () => {
     }
   };
 
-  const filteredCandidates = candidates.filter(c => 
-    c.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    (c.email && c.email.toLowerCase().includes(searchTerm.toLowerCase()))
-  );
+  const filteredRecipients = recipientType === 'Candidate' 
+    ? candidates.filter(c => 
+        c.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (c.email && c.email.toLowerCase().includes(searchTerm.toLowerCase()))
+      )
+    : employees.filter(e => 
+        e.fullName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        (e.email && e.email.toLowerCase().includes(searchTerm.toLowerCase()))
+      );
 
   return (
     <div className="sendmail-wrapper animate-fade">
@@ -185,20 +264,44 @@ const SendMail = () => {
               </div>
             </div>
 
+            <div className="mb-4">
+              <label className="form-label font-bold text-uppercase" style={{ fontSize: '0.75rem', letterSpacing: '0.05em' }}>Recipient Type</label>
+              <div className="d-flex gap-3">
+                <label className="d-flex align-items-center gap-2" style={{ cursor: 'pointer' }}>
+                  <input 
+                    type="radio" 
+                    name="recipientType" 
+                    checked={recipientType === 'Candidate'} 
+                    onChange={() => { setRecipientType('Candidate'); setSearchTerm(''); setSelectedCandidate(null); }}
+                  />
+                  <span className="font-bold small">CANDIDATE</span>
+                </label>
+                <label className="d-flex align-items-center gap-2" style={{ cursor: 'pointer' }}>
+                  <input 
+                    type="radio" 
+                    name="recipientType" 
+                    checked={recipientType === 'Employee'} 
+                    onChange={() => { setRecipientType('Employee'); setSearchTerm(''); setSelectedCandidate(null); }}
+                  />
+                  <span className="font-bold small">EMPLOYEE</span>
+                </label>
+              </div>
+            </div>
+
             <hr className="my-4" style={{ borderColor: 'var(--brand-border)' }} />
 
             {/* Recipient Details */}
             <h5 className="mb-3 font-bold text-navy">Recipient Details</h5>
             <div className="row g-3">
               <div className="col-md-6 position-relative">
-                <label className="form-label font-bold tracking-wider" style={{ fontSize: '12px' }}>Candidate Name *</label>
+                <label className="form-label font-bold tracking-wider" style={{ fontSize: '12px' }}>{recipientType} Name *</label>
                 <div className="search-input-wrapper position-relative">
                   <FiSearch className="position-absolute" style={{ top: 12, left: 12, color: 'var(--text-secondary)' }} />
                   <input
                     type="text"
                     className="form-control-custom w-100"
                     style={{ paddingLeft: '2.5rem' }}
-                    placeholder="Search candidate or type name"
+                    placeholder={`Search ${recipientType.toLowerCase()} or type name`}
                     value={searchTerm}
                     onChange={handleSearchChange}
                     onFocus={() => setShowDropdown(true)}
@@ -209,22 +312,22 @@ const SendMail = () => {
                 {/* Autocomplete Dropdown */}
                 {showDropdown && searchTerm && !selectedCandidate && (
                   <div className="autocomplete-dropdown shadow-sm card-enterprise" style={{ position: 'absolute', top: '100%', left: 0, right: 0, zIndex: 10, maxHeight: '200px', overflowY: 'auto' }}>
-                    {filteredCandidates.length > 0 ? (
+                    {filteredRecipients.length > 0 ? (
                       <div className="list-group list-group-flush">
-                        {filteredCandidates.map(c => (
+                        {filteredRecipients.map(person => (
                           <button
-                            key={c._id}
+                            key={person._id}
                             type="button"
                             className="list-group-item list-group-item-action border-0 py-2"
-                            onClick={() => handleSelectCandidate(c)}
+                            onClick={() => handleSelectRecipient(person, recipientType)}
                           >
-                            <div className="font-bold text-navy">{c.fullName}</div>
-                            <small className="text-secondary">{c.email || 'No email'}</small>
+                            <div className="font-bold text-navy">{person.fullName}</div>
+                            <small className="text-secondary">{person.email || 'No email'}</small>
                           </button>
                         ))}
                       </div>
                     ) : (
-                      <div className="p-3 text-center text-secondary small">No candidates found</div>
+                      <div className="p-3 text-center text-secondary small">No {recipientType.toLowerCase()}s found</div>
                     )}
                   </div>
                 )}
@@ -314,9 +417,41 @@ const SendMail = () => {
                 onChange={handleChange}
                 required
               ></textarea>
-              <small className="text-secondary mt-1 d-block">
+                <small className="text-secondary mt-1 d-block">
                 This content will be wrapped in a professional HTML template with Forge India Connect branding.
               </small>
+            </div>
+
+            {/* Attachments */}
+            <div className="mb-4">
+              <label className="form-label font-bold tracking-wider" style={{ fontSize: '12px' }}>Attachments</label>
+              <div className="attachment-zone p-3 border border-dashed rounded text-center" style={{ backgroundColor: 'var(--input-bg)', borderColor: 'var(--brand-border)' }}>
+                <input 
+                  type="file" 
+                  multiple 
+                  id="mail-attachments" 
+                  className="d-none" 
+                  onChange={handleFileChange}
+                />
+                <label htmlFor="mail-attachments" className="d-flex flex-column align-items-center cursor-pointer" style={{ cursor: 'pointer' }}>
+                  <FiPaperclip className="fs-3 mb-2 text-primary" />
+                  <span className="font-bold small">Click to attach files</span>
+                </label>
+              </div>
+              
+              {attachments.length > 0 && (
+                <div className="attachment-list mt-3 d-flex flex-wrap gap-2">
+                  {attachments.map((file, idx) => (
+                    <div key={idx} className="attachment-pill bg-white border px-2 py-1 rounded small d-flex align-items-center gap-2">
+                      <FiFileText className="text-secondary" />
+                      <span className="font-medium text-navy truncate" style={{ maxWidth: '150px' }}>{file.name}</span>
+                      <button type="button" className="btn-close-tiny p-0 border-0 bg-transparent" onClick={() => removeAttachment(idx)}>
+                        <FiX fontSize="10px" />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Status Messages */}

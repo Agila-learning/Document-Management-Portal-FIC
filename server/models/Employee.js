@@ -38,7 +38,11 @@ const employeeSchema = new mongoose.Schema({
     candidateRef: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Candidate'
-    }
+    },
+    documents: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Document'
+    }]
 }, {
     timestamps: true
 });

@@ -25,6 +25,7 @@ exports.uploadDocument = async (req, res) => {
             tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
             uploadedBy: req.user._id,
             candidate: candidateId || null,
+            employee: req.body.employeeId || null,
             companyName,
             clientName,
             confidentiality,
@@ -86,6 +87,7 @@ exports.getDocuments = async (req, res) => {
         if (fileType) query.fileType = fileType;
         if (status) query.status = status;
         if (candidate) query.candidate = candidate;
+        if (req.query.employee) query.employee = req.query.employee;
         if (isStarred) query.isStarred = (isStarred === 'true');
         if (isPinned) query.isPinned = (isPinned === 'true');
 

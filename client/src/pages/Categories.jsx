@@ -37,8 +37,9 @@ const Categories = () => {
     { id: 6,  name: 'Legal Documents',    description: 'Court documents, patents, and legal forms.'         },
     { id: 7,  name: 'Posters',            description: 'Visual assets and event graphics.'                  },
     { id: 8,  name: 'Candidate Documents',description: 'Personal onboarding and KYC files.'                },
-    { id: 9,  name: 'Client Documents',   description: 'Project specific client documentation.'             },
-    { id: 10, name: 'Miscellaneous',      description: 'General files and uncategorized media.'             },
+    { id: 9,  name: 'Employee Documents', description: 'Internal staff records and official personnel files.' },
+    { id: 10, name: 'Client Documents',   description: 'Project specific client documentation.'             },
+    { id: 11, name: 'Miscellaneous',      description: 'General files and uncategorized media.'             },
   ]);
 
   // ── Fetch live file counts ──────────────────────────────────────────

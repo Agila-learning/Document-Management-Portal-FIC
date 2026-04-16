@@ -50,7 +50,11 @@ const generateEmailHTML = ({ candidateName, subject, content, purpose, amountPai
         'Document Collection': { primary: '#2563eb', light: '#eff6ff', label: '📄 Document Collection' },
         'NOC Signed': { primary: '#059669', light: '#ecfdf5', label: '✅ NOC Acknowledgement' },
         'Payment Receipt': { primary: '#d97706', light: '#fffbeb', label: '💰 Payment Receipt' },
-        'Custom': { primary: '#7c3aed', light: '#f5f3ff', label: '📧 Official Communication' }
+        'Onboarding': { primary: '#7c3aed', light: '#f5f3ff', label: '👋 Employee Onboarding' },
+        'Offer Letter': { primary: '#2563eb', light: '#eff6ff', label: '✉️ Offer Letter' },
+        'Termination': { primary: '#dc2626', light: '#fef2f2', label: '⚠️ Employment Update' },
+        'Employee Documents Collected': { primary: '#059669', light: '#ecfdf5', label: '📂 Records Updated' },
+        'Custom': { primary: '#64748b', light: '#f8fafc', label: '📧 Official Communication' }
     };
 
     const theme = purposeColorMap[purpose] || purposeColorMap['Custom'];
@@ -142,7 +146,7 @@ const generateEmailHTML = ({ candidateName, subject, content, purpose, amountPai
  * @param {Object} params 
  * @returns {Promise<{success: boolean, messageId?: string, error?: string}>}
  */
-const sendAcknowledgementMail = async ({ to, subject, candidateName, content, purpose, amountPaid, paymentMode, transactionId }) => {
+const sendAcknowledgementMail = async ({ to, subject, candidateName, content, purpose, amountPaid, paymentMode, transactionId, attachments = [] }) => {
     try {
         const transporter = createTransporter();
 
@@ -163,7 +167,8 @@ const sendAcknowledgementMail = async ({ to, subject, candidateName, content, pu
             from: `"${fromName}" <${fromEmail}>`,
             to,
             subject,
-            html: htmlContent
+            html: htmlContent,
+            attachments: attachments
         };
 
         const info = await transporter.sendMail(mailOptions);

@@ -5,7 +5,10 @@ import {
 } from 'react-icons/fi';
 import api from '../utils/api';
 import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import EmptyState from '../components/common/EmptyState';
+import UploadModal from '../components/documents/UploadModal';
+import DocumentTable from '../components/documents/DocumentTable';
 import './Candidates.css'; // Reusing candidate styles for consistency
 
 const EmployeeDirectory = () => {
@@ -23,6 +26,15 @@ const EmployeeDirectory = () => {
     baseSalary: ''
   });
 
+  // Document Management State
+  const [selectedEmployee, setSelectedEmployee] = useState(null);
+  const [isDocModalOpen, setIsDocModalOpen] = useState(false);
+  const [employeeDocs, setEmployeeDocs] = useState([]);
+  const [loadingDocs, setLoadingDocs] = useState(false);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+
+  const navigate = useNavigate();
+
   const fetchEmployees = async () => {
     setLoading(true);
     try {
@@ -35,6 +47,30 @@ const EmployeeDirectory = () => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const fetchEmployeeDocs = async (empId) => {
+    setLoadingDocs(true);
+    try {
+      const { data } = await api.get('/documents', {
+        params: { employee: empId }
+      });
+      setEmployeeDocs(data);
+    } catch (error) {
+      console.error('Error fetching docs:', error);
+    } finally {
+      setLoadingDocs(false);
+    }
+  };
+
+  const handleOpenDocs = (emp) => {
+    setSelectedEmployee(emp);
+    setIsDocModalOpen(true);
+    fetchEmployeeDocs(emp._id);
+  };
+
+  const handleSendMail = (emp) => {
+    navigate(`/send-mail?employeeId=${emp._id}`);
   };
 
   useEffect(() => {
@@ -140,8 +176,18 @@ const EmployeeDirectory = () => {
                 </div>
 
                 <div className="d-flex gap-2">
-                  <button className="btn btn-outline-primary-custom flex-grow-1 py-2">View Profile</button>
-                  <button className="btn btn-primary-custom flex-grow-1 py-2">Documents</button>
+                  <button 
+                    className="btn btn-outline-primary-custom flex-grow-1 py-2"
+                    onClick={() => handleSendMail(emp)}
+                  >
+                    Send Email
+                  </button>
+                  <button 
+                    className="btn btn-primary-custom flex-grow-1 py-2"
+                    onClick={() => handleOpenDocs(emp)}
+                  >
+                    Documents
+                  </button>
                 </div>
               </div>
             </div>
@@ -156,6 +202,51 @@ const EmployeeDirectory = () => {
           />
         </div>
       )}
+
+      {/* Employee Documents Modal */}
+      {isDocModalOpen && selectedEmployee && (
+        <div className="modal-overlay" onClick={() => setIsDocModalOpen(false)}>
+          <div className="modal-content animate-slideUp" style={{ width: '900px', maxWidth: '95vw' }} onClick={e => e.stopPropagation()}>
+            <div className="modal-header-custom mb-4 d-flex justify-content-between align-items-center">
+              <div>
+                <h2 className="modal-title h5 font-extrabold m-0">Library: {selectedEmployee.fullName}</h2>
+                <p className="text-secondary small m-0">Manage official documents and personnel records</p>
+              </div>
+              <div className="d-flex gap-2">
+                <button 
+                  className="btn btn-primary-custom d-flex align-items-center gap-2"
+                  onClick={() => setIsUploadOpen(true)}
+                >
+                  <FiUserPlus /> Upload New
+                </button>
+                <button className="btn-close-custom" onClick={() => setIsDocModalOpen(false)}>&times;</button>
+              </div>
+            </div>
+
+            <div className="modal-body-scroll" style={{ maxHeight: '60vh', overflowY: 'auto' }}>
+              {loadingDocs ? (
+                <div className="text-center py-5">Loading documents...</div>
+              ) : (
+                <DocumentTable 
+                  documents={employeeDocs}
+                  onPreview={(doc) => window.open(`${api.defaults.baseURL.replace('/api', '')}/${doc.filePath}`, '_blank')}
+                  onDownload={(doc) => window.open(`${api.defaults.baseURL.replace('/api', '')}/api/documents/download/${doc._id}`, '_blank')}
+                  onEdit={() => {}}
+                  onDelete={() => {}}
+                />
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Upload Modal Integration */}
+      <UploadModal 
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        employeeId={selectedEmployee?._id}
+        onUploadSuccess={() => fetchEmployeeDocs(selectedEmployee?._id)}
+      />
 
       {/* Add Employee Modal */}
       {isAddModalOpen && (

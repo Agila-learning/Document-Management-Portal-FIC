@@ -18,7 +18,7 @@ const mailLogSchema = new mongoose.Schema({
     },
     mailPurpose: {
         type: String,
-        enum: ['Document Collection', 'NOC Signed', 'Payment Receipt', 'Custom'],
+        enum: ['Document Collection', 'NOC Signed', 'Payment Receipt', 'Onboarding', 'Offer Letter', 'Termination', 'Employee Documents Collected', 'Custom'],
         required: true
     },
     subject: {

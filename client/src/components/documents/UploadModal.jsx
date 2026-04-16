@@ -3,7 +3,7 @@ import { FiX, FiUploadCloud, FiFile, FiCheck, FiLoader, FiInfo, FiLock, FiUnlock
 import api from '../../utils/api';
 import './UploadModal.css';
 
-const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
+const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId }) => {
   const [file, setFile] = useState(null);
   const [metadata, setMetadata] = useState({
     title: '',
@@ -22,7 +22,7 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
   const companies = ['Skilnexia', 'Antigraviity', 'Forge India Connect'];
   const categories = [
     'MOU', 'NOC', 'SLA', 'Offer Letters', 'HR Documents', 
-    'Legal Documents', 'Posters', 'Candidate Documents', 
+    'Legal Documents', 'Posters', 'Candidate Documents', 'Employee Documents', 
     'Client Documents', 'Miscellaneous'
   ];
 
@@ -45,9 +45,14 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess }) => {
     formData.append('file', file);
     formData.append('title', metadata.title);
     formData.append('companyName', metadata.companyName);
-    formData.append('category', metadata.category);
     formData.append('description', metadata.description);
     formData.append('confidentiality', metadata.confidentiality);
+    if (employeeId) {
+      formData.append('employeeId', employeeId);
+      formData.append('category', 'Employee Documents'); // Auto-set for employee uploads
+    } else {
+      formData.append('category', metadata.category);
+    }
     if (!noExpiry && metadata.expiryDate) {
       formData.append('expiryDate', metadata.expiryDate);
     }
