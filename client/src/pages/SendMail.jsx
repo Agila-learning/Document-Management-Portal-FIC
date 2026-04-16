@@ -1,3 +1,4 @@
+import React, { useState, useEffect } from 'react';
 import { FiMail, FiCheckCircle, FiSend, FiFileText, FiClock, FiSearch, FiPaperclip, FiX } from 'react-icons/fi';
 import api from '../utils/api';
 import { useLocation } from 'react-router-dom';
