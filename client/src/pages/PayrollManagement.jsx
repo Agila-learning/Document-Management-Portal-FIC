@@ -213,67 +213,90 @@ const PayrollManagement = () => {
 
       {/* Log Payroll Modal */}
       {isLogModalOpen && (
-        <div className="modal-overlay" onClick={() => setIsLogModalOpen(false)}>
-          <div className="modal-content animate-slideUp" onClick={e => e.stopPropagation()}>
-            <div className="modal-header-custom mb-4">
-              <h2 className="modal-title h5 font-extrabold m-0">Generate Salary Record</h2>
-              <button className="btn-close-custom" onClick={() => setIsLogModalOpen(false)}>&times;</button>
-            </div>
-            <form onSubmit={handleCreateRecord}>
-              <div className="row g-3">
-                <div className="col-12">
-                  <label className="field-label">Select Employee</label>
-                  <select 
-                    className="form-input-custom" 
-                    required 
-                    value={newRecord.employeeId}
-                    onChange={(e) => {
-                      const emp = employees.find(emp => emp._id === e.target.value);
-                      setNewRecord({
-                        ...newRecord, 
-                        employeeId: e.target.value,
-                        baseSalary: emp ? emp.baseSalary : 0
-                      });
-                    }}
-                  >
-                    <option value="">Choose Employee...</option>
-                    {employees.map(emp => (
-                      <option key={emp._id} value={emp._id}>{emp.fullName}</option>
-                    ))}
-                  </select>
-                </div>
-                <div className="col-md-6">
-                  <label className="field-label">Base Salary</label>
-                  <input 
-                    type="number" 
-                    className="form-input-custom bg-light" 
-                    readOnly 
-                    value={newRecord.baseSalary}
-                  />
-                </div>
-                <div className="col-md-6">
-                  <label className="field-label">LOP Days</label>
-                  <input 
-                    type="number" 
-                    className="form-input-custom" 
-                    required 
-                    min="0"
-                    max="31"
-                    value={newRecord.lopDays}
-                    onChange={e => setNewRecord({...newRecord, lopDays: parseInt(e.target.value) || 0})}
-                  />
-                </div>
-                <div className="col-12 mt-4">
-                  <div className="p-3 bg-primary-soft rounded mb-3 d-flex justify-content-between align-items-center">
-                    <span className="small text-navy font-bold">Estimated Net Salary:</span>
-                    <span className="h5 text-primary font-extrabold m-0">
-                      ₹{Math.round((newRecord.baseSalary / 30) * (30 - newRecord.lopDays)).toLocaleString()}
-                    </span>
-                  </div>
-                  <button type="submit" className="btn btn-primary-custom w-100 py-3 font-bold">Confirm & Generate</button>
-                </div>
+        <div className="modal-custom-overlay" onClick={() => setIsLogModalOpen(false)}>
+          <div className="modal-custom-content animate-slideUp" style={{ width: '500px' }} onClick={e => e.stopPropagation()}>
+            <div className="modal-custom-header d-flex justify-content-between align-items-center">
+              <div>
+                <h2 className="modal-title-custom">Generate Salary Record</h2>
+                <span className="modal-subtitle-custom">Process monthly payroll for {months.find(m => m.value === selectedMonth).label} {selectedYear}</span>
               </div>
-            </form>
+              <button className="btn-close-modal-custom" onClick={() => setIsLogModalOpen(false)}>&times;</button>
+            </div>
+            
+            <div className="modal-custom-body">
+              <form onSubmit={handleCreateRecord}>
+                <div className="row g-4">
+                  <div className="col-12">
+                    <div className="form-group-custom">
+                      <label>Select Employee</label>
+                      <select 
+                        className="form-control-custom w-100" 
+                        required 
+                        value={newRecord.employeeId}
+                        onChange={(e) => {
+                          const emp = employees.find(emp => emp._id === e.target.value);
+                          setNewRecord({
+                            ...newRecord, 
+                            employeeId: e.target.value,
+                            baseSalary: emp ? emp.baseSalary : 0
+                          });
+                        }}
+                      >
+                        <option value="">Choose Employee...</option>
+                        {employees.map(emp => (
+                          <option key={emp._id} value={emp._id}>{emp.fullName}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
+                  
+                  <div className="col-md-6">
+                    <div className="form-group-custom">
+                      <label>Base Salary (₹)</label>
+                      <input 
+                        type="number" 
+                        className="form-control-custom w-100" 
+                        placeholder="Enter amount"
+                        required
+                        value={newRecord.baseSalary}
+                        onChange={e => setNewRecord({...newRecord, baseSalary: parseFloat(e.target.value) || 0})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="col-md-6">
+                    <div className="form-group-custom">
+                      <label>LOP Days</label>
+                      <input 
+                        type="number" 
+                        className="form-control-custom w-100" 
+                        required 
+                        min="0"
+                        max="31"
+                        value={newRecord.lopDays}
+                        onChange={e => setNewRecord({...newRecord, lopDays: parseInt(e.target.value) || 0})}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="col-12 mt-4">
+                    <div className="p-4 bg-primary-soft rounded-3 mb-4 d-flex justify-content-between align-items-center border border-primary border-opacity-10">
+                      <div>
+                        <div className="text-secondary small font-bold text-uppercase tracking-wider mb-1">Estimated Net Salary</div>
+                        <div className="h4 text-primary font-extrabold m-0">
+                          ₹{Math.round((newRecord.baseSalary / 30) * (30 - newRecord.lopDays)).toLocaleString()}
+                        </div>
+                      </div>
+                      <FiCheckCircle className="text-primary h3 m-0 opacity-20" />
+                    </div>
+                    <button type="submit" className="btn btn-primary-custom w-100 py-3 font-bold h5">Confirm & Generate Record</button>
+                    <p className="text-center text-secondary tiny mt-3 font-semibold text-uppercase tracking-tighter">
+                      This record will be logged for the {selectedCompany} workspace
+                    </p>
+                  </div>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       )}
