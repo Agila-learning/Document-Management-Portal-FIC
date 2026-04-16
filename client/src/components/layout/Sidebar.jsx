@@ -16,20 +16,14 @@ const Sidebar = ({ isOpen, onClose }) => {
     { label: 'Overview', icon: FiHome, path: '/' },
     { label: 'Documents', icon: FiFileText, path: '/documents' },
     { label: 'Categories', icon: FiFolder, path: '/categories' },
+    { label: 'Employees', icon: FiUserCheck, path: '/employees' },
+    { label: 'Payroll', icon: FiCreditCard, path: '/payroll' },
     { label: 'Candidates', icon: FiUsers, path: '/candidates' },
     { label: 'Send Mail', icon: FiMail, path: '/send-mail' },
     { label: 'Alerts', icon: FiAlertCircle, path: '/alerts' },
     { label: 'Archive', icon: FiArchive, path: '/archive' },
     { label: 'Trash', icon: FiTrash2, path: '/trash' },
   ];
-
-  // Company-Specific Items
-  if (activeCompany && activeCompany !== 'All') {
-    menuItems.splice(4, 0, 
-      { label: 'Employees', icon: FiUserCheck, path: '/employees' },
-      { label: 'Payroll', icon: FiCreditCard, path: '/payroll' }
-    );
-  }
 
   const handleLogout = () => {
     logout();
