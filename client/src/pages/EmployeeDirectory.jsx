@@ -26,6 +26,11 @@ const EmployeeDirectory = () => {
     baseSalary: ''
   });
 
+  // Action Menu & editing State
+  const [activeMenu, setActiveMenu] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingEmployee, setEditingEmployee] = useState(null);
+
   // Document Management State
   const [selectedEmployee, setSelectedEmployee] = useState(null);
   const [isDocModalOpen, setIsDocModalOpen] = useState(false);
@@ -96,11 +101,40 @@ const EmployeeDirectory = () => {
     }
   };
 
+  const handleUpdateEmployee = async (e) => {
+    e.preventDefault();
+    try {
+      await api.put(`/employees/${editingEmployee._id}`, editingEmployee);
+      setIsEditModalOpen(false);
+      setEditingEmployee(null);
+      fetchEmployees();
+    } catch (error) {
+      alert(error.response?.data?.message || 'Error updating employee');
+    }
+  };
+
+  const handleDeleteEmployee = async (emp) => {
+    if (!window.confirm(`Are you sure you want to permanently purge the record for ${emp.fullName}? This action cannot be undone.`)) return;
+    try {
+      await api.delete(`/employees/${emp._id}`);
+      fetchEmployees();
+    } catch (error) {
+      alert(error.response?.data?.message || 'Error deleting employee');
+    }
+  };
+
   const filteredEmployees = employees.filter(emp => 
     emp.fullName.toLowerCase().includes(searchQuery.toLowerCase()) ||
     emp.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
     emp.designation.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  // Close menu on click outside
+  useEffect(() => {
+    const handleOutsideClick = () => setActiveMenu(null);
+    document.addEventListener('click', handleOutsideClick);
+    return () => document.removeEventListener('click', handleOutsideClick);
+  }, []);
 
   return (
     <div className="employees-container animate-fade">
@@ -150,7 +184,7 @@ const EmployeeDirectory = () => {
             /* 4. Card Styling Improvements */
             <div className="employee-card" key={emp._id}>
               {/* 3. Employee Card Alignment - Top Row */}
-              <div className="card-header-main">
+                <div className="card-header-main">
                 <div className="employee-profile-box">
                   <div className="employee-avatar-lg">
                     {emp.fullName.charAt(0)}
@@ -160,9 +194,41 @@ const EmployeeDirectory = () => {
                     <span className="emp-role">{emp.designation}</span>
                   </div>
                 </div>
-                <button className="card-menu-btn">
-                  <FiMoreVertical />
-                </button>
+                <div className="position-relative">
+                  <button 
+                    className={`card-menu-btn ${activeMenu === emp._id ? 'active' : ''}`}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      setActiveMenu(activeMenu === emp._id ? null : emp._id);
+                    }}
+                  >
+                    <FiMoreVertical />
+                  </button>
+                  {activeMenu === emp._id && (
+                    <div className="card-dropdown-menu" onClick={e => e.stopPropagation()}>
+                      <button 
+                        className="dropdown-item-custom"
+                        onClick={() => {
+                          setEditingEmployee(emp);
+                          setIsEditModalOpen(true);
+                          setActiveMenu(null);
+                        }}
+                      >
+                        Edit Details
+                      </button>
+                      <div className="dropdown-divider-custom" />
+                      <button 
+                        className="dropdown-item-custom delete-text"
+                        onClick={() => {
+                          handleDeleteEmployee(emp);
+                          setActiveMenu(null);
+                        }}
+                      >
+                        Purge Record
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
               
               {/* 3. Employee Card Alignment - Middle Section */}
@@ -252,6 +318,75 @@ const EmployeeDirectory = () => {
         employeeId={selectedEmployee?._id}
         onUploadSuccess={() => fetchEmployeeDocs(selectedEmployee?._id)}
       />
+
+      {/* Edit Employee Modal */}
+      {isEditModalOpen && editingEmployee && (
+        <div className="modal-overlay" onClick={() => setIsEditModalOpen(false)}>
+          <div className="modal-content animate-slideUp" onClick={e => e.stopPropagation()}>
+            <div className="modal-header-custom mb-4">
+              <h2 className="modal-title h5 font-extrabold m-0">Edit: {editingEmployee.fullName}</h2>
+              <button className="btn-close-custom" onClick={() => setIsEditModalOpen(false)}>&times;</button>
+            </div>
+            <form onSubmit={handleUpdateEmployee}>
+              <div className="row g-3">
+                <div className="col-12">
+                  <label className="field-label-custom">Full Name</label>
+                  <input 
+                    type="text" 
+                    className="form-control-custom" 
+                    required 
+                    value={editingEmployee.fullName}
+                    onChange={e => setEditingEmployee({...editingEmployee, fullName: e.target.value})}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="field-label-custom">Email Address</label>
+                  <input 
+                    type="email" 
+                    className="form-control-custom" 
+                    required 
+                    value={editingEmployee.email}
+                    onChange={e => setEditingEmployee({...editingEmployee, email: e.target.value})}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="field-label-custom">Designation</label>
+                  <input 
+                    type="text" 
+                    className="form-control-custom" 
+                    required 
+                    value={editingEmployee.designation}
+                    onChange={e => setEditingEmployee({...editingEmployee, designation: e.target.value})}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="field-label-custom">Joining Date</label>
+                  <input 
+                    type="date" 
+                    className="form-control-custom" 
+                    required 
+                    value={editingEmployee.joiningDate.split('T')[0]}
+                    onChange={e => setEditingEmployee({...editingEmployee, joiningDate: e.target.value})}
+                  />
+                </div>
+                <div className="col-md-6">
+                  <label className="field-label-custom">Base Salary</label>
+                  <input 
+                    type="number" 
+                    className="form-control-custom" 
+                    required 
+                    value={editingEmployee.baseSalary}
+                    onChange={e => setEditingEmployee({...editingEmployee, baseSalary: e.target.value})}
+                  />
+                </div>
+                <div className="col-12 mt-4">
+                  <button type="submit" className="btn btn-primary-custom w-100 py-3 font-bold">Update Records</button>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {isAddModalOpen && (
         <div className="modal-overlay" onClick={() => setIsAddModalOpen(false)}>
