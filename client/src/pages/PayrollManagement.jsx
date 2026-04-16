@@ -14,7 +14,10 @@ const PayrollManagement = () => {
   const [loading, setLoading] = useState(true);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
+  const [selectedCompany, setSelectedCompany] = useState(activeCompany || 'All');
   const [isLogModalOpen, setIsLogModalOpen] = useState(false);
+  
+  const companiesList = ['All', 'Skilnexia', 'Antigraviity', 'Forge India Connect'];
   
   const [newRecord, setNewRecord] = useState({
     employeeId: '',
@@ -35,8 +38,18 @@ const PayrollManagement = () => {
     setLoading(true);
     try {
       const [payrollRes, employeeRes] = await Promise.all([
-        api.get('/payroll', { params: { month: selectedMonth, year: selectedYear } }),
-        api.get('/employees', { params: { companyName: activeCompany } })
+        api.get('/payroll', { 
+          params: { 
+            month: selectedMonth, 
+            year: selectedYear,
+            companyName: selectedCompany 
+          } 
+        }),
+        api.get('/employees', { 
+          params: { 
+            companyName: selectedCompany === 'All' ? undefined : selectedCompany 
+          } 
+        })
       ]);
       setRecords(payrollRes.data);
       setEmployees(employeeRes.data);
@@ -49,7 +62,7 @@ const PayrollManagement = () => {
 
   useEffect(() => {
     fetchData();
-  }, [selectedMonth, selectedYear]);
+  }, [selectedMonth, selectedYear, selectedCompany]);
 
   const handleCreateRecord = async (e) => {
     e.preventDefault();
@@ -112,6 +125,16 @@ const PayrollManagement = () => {
               onChange={(e) => setSelectedYear(parseInt(e.target.value))}
             >
               {[2024, 2025, 2026].map(y => <option key={y} value={y}>{y}</option>)}
+            </select>
+          </div>
+          <div className="filter-group">
+            <label className="field-label-mini">Company Workspace</label>
+            <select 
+              className="form-select border-0 bg-primary-soft text-primary fw-bold"
+              value={selectedCompany}
+              onChange={(e) => setSelectedCompany(e.target.value)}
+            >
+              {companiesList.map(comp => <option key={comp} value={comp}>{comp}</option>)}
             </select>
           </div>
         </div>

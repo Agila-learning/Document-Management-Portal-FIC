@@ -46,19 +46,27 @@ exports.createPayrollRecord = async (req, res) => {
     }
 };
 
-// @desc    Get payroll records by month/year or employee
 // @route   GET /api/payroll
 // @access  Private
 exports.getPayrollRecords = async (req, res) => {
     try {
-        const { month, year, employeeId } = req.query;
+        const { month, year, employeeId, companyName } = req.query;
         let query = {};
+        
         if (month) query.month = month;
         if (year) query.year = year;
-        if (employeeId) query.employee = employeeId;
+        
+        if (employeeId) {
+            query.employee = employeeId;
+        } else if (companyName && companyName !== 'All') {
+            // Find employee IDs for this company
+            const employees = await Employee.find({ companyName }).select('_id');
+            const employeeIds = employees.map(e => e._id);
+            query.employee = { $in: employeeIds };
+        }
 
         const records = await Payroll.find(query)
-            .populate('employee', 'fullName email designation')
+            .populate('employee', 'fullName email designation companyName')
             .sort({ month: -1, year: -1 });
 
         res.json(records);
