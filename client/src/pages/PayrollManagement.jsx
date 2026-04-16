@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { 
   FiDollarSign, FiCalendar, FiUser, FiInfo, 
   FiCheckCircle, FiClock, FiPlus, FiFilter 
@@ -213,8 +214,8 @@ const PayrollManagement = () => {
         )}
       </div>
 
-      {/* Log Payroll Modal - Moved outside payroll-wrapper to fix stacking context */}
-      {isLogModalOpen && (
+      {/* Log Payroll Modal - Using React Portal to break out of all stacking contexts */}
+      {isLogModalOpen && createPortal(
         <div className="modal-custom-overlay" onClick={() => setIsLogModalOpen(false)}>
           <div className="modal-custom-content animate-slideUp" style={{ width: '500px' }} onClick={e => e.stopPropagation()}>
             <div className="modal-custom-header d-flex justify-content-between align-items-center">
@@ -301,7 +302,8 @@ const PayrollManagement = () => {
               </form>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       <style jsx>{`
