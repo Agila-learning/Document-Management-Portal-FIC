@@ -71,9 +71,15 @@ const Documents = () => {
 
   const handleDownload = async (doc) => {
     try {
-      const normalized = doc.filePath.replace(/\\/g, '/');
-      const afterUploads = normalized.split('uploads/').slice(1).join('uploads/');
-      const url = `${BASE_URL}/uploads/${afterUploads}`;
+      let url = doc.filePath;
+      
+      // If it's a relative local path, construct the full URL
+      if (!url.startsWith('http')) {
+        const normalized = doc.filePath.replace(/\\/g, '/');
+        const afterUploads = normalized.split('uploads/').slice(1).join('uploads/');
+        url = `${BASE_URL}/uploads/${afterUploads}`;
+      }
+
       const response = await fetch(url);
       const blob = await response.blob();
       const blobUrl = window.URL.createObjectURL(blob);

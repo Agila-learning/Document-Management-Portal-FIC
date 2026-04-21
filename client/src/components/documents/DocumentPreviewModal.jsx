@@ -9,7 +9,12 @@ const DocumentPreviewModal = ({ isOpen, onClose, document: doc }) => {
   const getFileUrl = () => {
     if (!doc.filePath) return '';
     
-    // Normalize path separators
+    // If it's an absolute URL (Cloudinary), return it directly
+    if (doc.filePath.startsWith('http')) {
+      return doc.filePath;
+    }
+    
+    // Normalize path separators for local files
     const normalized = doc.filePath.replace(/\\/g, '/');
     
     // If path starts with uploads/, remove it so we don't double it up

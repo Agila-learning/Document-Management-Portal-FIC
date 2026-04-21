@@ -3,6 +3,7 @@ const ActivityLog = require('../models/ActivityLog');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
+const { cloudinary } = require('../config/cloudinary');
 
 // @desc    Upload a document
 // @route   POST /api/documents/upload
@@ -19,7 +20,8 @@ exports.uploadDocument = async (req, res) => {
             title: title || req.file.originalname,
             category,
             description,
-            filePath: req.file.path,
+            filePath: req.file.path, // Cloudinary URL
+            cloudinaryPublicId: req.file.filename, // Cloudinary public_id
             fileType: path.extname(req.file.originalname),
             fileSize: req.file.size,
             tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
@@ -193,10 +195,15 @@ exports.permanentDeleteDocument = async (req, res) => {
             return res.status(404).json({ message: 'Document not found' });
         }
 
-        // 1. Delete physical file
-        const filePath = path.resolve(document.filePath);
-        if (fs.existsSync(filePath)) {
-            fs.unlinkSync(filePath);
+        // 1. Delete from Cloudinary if it exists
+        if (document.cloudinaryPublicId) {
+            await cloudinary.uploader.destroy(document.cloudinaryPublicId);
+        } else {
+            // Fallback for local files if any still exist
+            const filePath = path.resolve(document.filePath);
+            if (fs.existsSync(filePath)) {
+                fs.unlinkSync(filePath);
+            }
         }
 
         // 2. Remove from DB
