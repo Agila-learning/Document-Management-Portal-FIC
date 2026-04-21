@@ -42,7 +42,6 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId }) => {
 
     setUploading(true);
     const formData = new FormData();
-    formData.append('file', file);
     formData.append('title', metadata.title);
     formData.append('companyName', metadata.companyName);
     formData.append('description', metadata.description);
@@ -59,11 +58,11 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId }) => {
     if (showPasswordField && metadata.password) {
       formData.append('password', metadata.password);
     }
+    // File should be appended LAST to ensure other fields are available in multer
+    formData.append('file', file);
 
     try {
-      await api.post('/documents/upload', formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
-      });
+      await api.post('/documents/upload', formData);
       setSuccess(true);
       setTimeout(() => {
         onUploadSuccess && onUploadSuccess();

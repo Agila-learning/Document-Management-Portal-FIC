@@ -10,9 +10,16 @@ if (!fs.existsSync(uploadDir)) {
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
+        console.log('--- Upload Debug ---');
+        console.log('Body:', req.body);
+        console.log('File originalname:', file.originalname);
+        
         const company = req.body.companyName || 'Unassigned';
         const category = req.body.category || 'Miscellaneous';
         const dest = path.join('uploads', company, category);
+        
+        console.log('Target Destination:', dest);
+        
         if (!fs.existsSync(dest)) {
             fs.mkdirSync(dest, { recursive: true });
         }
