@@ -2,10 +2,10 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 
-// Ensure base uploads directory exists
-const uploadDir = 'uploads/';
+// Ensure base uploads directory exists - using absolute path relative to this file
+const uploadDir = path.resolve(__dirname, '..', 'uploads');
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir);
+    fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
@@ -16,7 +16,7 @@ const storage = multer.diskStorage({
         
         const company = req.body.companyName || 'Unassigned';
         const category = req.body.category || 'Miscellaneous';
-        const dest = path.join('uploads', company, category);
+        const dest = path.join(uploadDir, company, category);
         
         console.log('Target Destination:', dest);
         
