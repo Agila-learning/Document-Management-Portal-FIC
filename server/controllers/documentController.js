@@ -196,11 +196,12 @@ exports.permanentDeleteDocument = async (req, res) => {
         }
 
         // 1. Delete from Cloudinary if it exists
-        if (document.cloudinaryPublicId) {
+        if (document.cloudinaryPublicId && document.filePath && document.filePath.startsWith('http')) {
             await cloudinary.uploader.destroy(document.cloudinaryPublicId);
-        } else {
+        } else if (document.filePath) {
             // Fallback for local files if any still exist
-            const filePath = path.resolve(document.filePath);
+            const filename = document.filePath.split(/[\\/]/).pop();
+            const filePath = path.join(__dirname, '..', 'uploads', filename);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }

@@ -27,7 +27,7 @@ const DocumentPreviewModal = ({ isOpen, onClose, document: doc }) => {
     const base = BASE_URL.replace(/\/$/, '');
     const path = cleanPath.replace(/^\//, '');
     
-    return `${base}/uploads/${path}`;
+    return `${base}/uploads/${encodeURI(path)}`;
   };
 
 

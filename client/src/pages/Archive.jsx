@@ -43,7 +43,7 @@ const Archive = () => {
 
   const handleDownload = (doc) => {
     const relativePath = doc.filePath.replace(/\\/g, '/').replace('uploads/', '');
-    window.open(`${BASE_URL}/uploads/${relativePath}`, '_blank');
+    window.open(`${BASE_URL}/uploads/${encodeURI(relativePath)}`, '_blank');
   };
 
   return (

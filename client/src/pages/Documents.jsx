@@ -77,7 +77,7 @@ const Documents = () => {
       if (!url.startsWith('http')) {
         const normalized = doc.filePath.replace(/\\/g, '/');
         const afterUploads = normalized.split('uploads/').slice(1).join('uploads/');
-        url = `${BASE_URL}/uploads/${afterUploads}`;
+        url = `${BASE_URL}/uploads/${encodeURI(afterUploads)}`;
       }
 
       const response = await fetch(url);

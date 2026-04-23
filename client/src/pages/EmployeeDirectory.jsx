@@ -301,8 +301,14 @@ const EmployeeDirectory = () => {
               ) : (
                 <DocumentTable 
                   documents={employeeDocs}
-                  onPreview={(doc) => window.open(`${api.defaults.baseURL.replace('/api', '')}/${doc.filePath}`, '_blank')}
-                  onDownload={(doc) => window.open(`${api.defaults.baseURL.replace('/api', '')}/api/documents/download/${doc._id}`, '_blank')}
+                  onPreview={(doc) => {
+                    const rel = doc.filePath.replace(/\\/g, '/').replace('uploads/', '');
+                    window.open(`${api.defaults.baseURL.replace(/\/api$/, '')}/uploads/${encodeURI(rel)}`, '_blank');
+                  }}
+                  onDownload={(doc) => {
+                    const rel = doc.filePath.replace(/\\/g, '/').replace('uploads/', '');
+                    window.open(`${api.defaults.baseURL.replace(/\/api$/, '')}/uploads/${encodeURI(rel)}`, '_blank');
+                  }}
                   onEdit={() => {}}
                   onDelete={() => {}}
                 />
