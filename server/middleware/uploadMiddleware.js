@@ -10,7 +10,21 @@ if (!fs.existsSync(uploadsDir)) {
 
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, uploadsDir);
+        const company = req.body.companyName || 'Unassigned';
+        const category = req.body.category || 'Miscellaneous';
+        
+        // Sanitize names to prevent directory traversal or invalid paths
+        const safeCompany = company.replace(/[^a-z0-9]/gi, '_');
+        const safeCategory = category.replace(/[^a-z0-9]/gi, '_');
+        
+        const targetDir = path.join(uploadsDir, safeCompany, safeCategory);
+        
+        // Ensure directory exists
+        if (!fs.existsSync(targetDir)) {
+            fs.mkdirSync(targetDir, { recursive: true });
+        }
+        
+        cb(null, targetDir);
     },
     filename: function (req, file, cb) {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);

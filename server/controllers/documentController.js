@@ -20,8 +20,8 @@ exports.uploadDocument = async (req, res) => {
             title: title || req.file.originalname,
             category,
             description,
-            filePath: req.file.path, // Cloudinary URL
-            cloudinaryPublicId: req.file.filename, // Cloudinary public_id
+            filePath: `uploads/${path.relative(path.join(__dirname, '..', 'uploads'), req.file.path).replace(/\\/g, '/')}`,
+            cloudinaryPublicId: req.file.filename, // Cloudinary public_id (or multer filename)
             fileType: path.extname(req.file.originalname),
             fileSize: req.file.size,
             tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
@@ -199,9 +199,11 @@ exports.permanentDeleteDocument = async (req, res) => {
         if (document.cloudinaryPublicId && document.filePath && document.filePath.startsWith('http')) {
             await cloudinary.uploader.destroy(document.cloudinaryPublicId);
         } else if (document.filePath) {
-            // Fallback for local files if any still exist
-            const filename = document.filePath.split(/[\\/]/).pop();
-            const filePath = path.join(__dirname, '..', 'uploads', filename);
+            // Resolve relative path to absolute for deletion
+            const relativePath = document.filePath.startsWith('uploads/') 
+                ? document.filePath.replace('uploads/', '') 
+                : document.filePath;
+            const filePath = path.join(__dirname, '..', 'uploads', relativePath);
             if (fs.existsSync(filePath)) {
                 fs.unlinkSync(filePath);
             }
