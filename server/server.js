@@ -128,11 +128,12 @@ app.use((req, res, next) => {
 
 // Error Handler
 app.use((err, req, res, next) => {
-    const errorLog = `[${new Date().toISOString()}] ${err.stack}\n---\n`;
+    const status = err.status || err.statusCode || 500;
+    const errorLog = `[${new Date().toISOString()}] ${status} - ${err.message}\n${err.stack}\n---\n`;
     fs.appendFileSync(path.join(__dirname, 'error.log'), errorLog);
-    console.error(err.stack);
-    res.status(500).json({ 
-        message: 'Internal Server Error',
+    console.error(`[ERROR ${status}]`, err.stack);
+    res.status(status).json({ 
+        message: err.message || 'Internal Server Error',
         error: process.env.NODE_ENV === 'development' ? err.message : undefined 
     });
 });
