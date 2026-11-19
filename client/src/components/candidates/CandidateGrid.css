@@ -63,6 +63,7 @@
 }
 
 .candidate-badge-verified { background: #ecfdf5; color: #059669; }
+.candidate-badge-submitted { background: #eff6ff; color: #2563eb; }
 .candidate-badge-pending { background: #fffbeb; color: #d97706; }
 .candidate-badge-incomplete { background: #fef2f2; color: #dc2626; }
 

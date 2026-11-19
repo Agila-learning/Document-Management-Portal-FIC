@@ -1,22 +1,95 @@
 .candidates-wrapper {
-  animation: fadeIn 0.4s ease-out;
+  animation: fadeIn 0.3s ease-out;
 }
 
 .candidate-header-icon-box {
-  width: 56px;
-  height: 56px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  color: var(--primary-color);
-  background-color: var(--card-bg);
-  border: 1px solid var(--brand-border);
+  font-size: 1.4rem;
+  color: #2563eb;
+  background-color: #eff6ff;
+  border: 1px solid #bfdbfe;
   border-radius: 12px;
+  flex-shrink: 0;
+}
+
+/* View Mode Switcher Pills */
+.view-mode-toggle {
+  background: #f1f5f9;
+  padding: 4px;
+  border-radius: 10px;
+  display: inline-flex;
+  gap: 4px;
+  border: 1px solid #e2e8f0;
+}
+
+.btn-view-toggle {
+  border: none;
+  background: transparent;
+  padding: 0.45rem 0.9rem;
+  border-radius: 7px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-view-toggle:hover {
+  color: #0f172a;
+}
+
+.btn-view-toggle.active {
+  background: #ffffff;
+  color: #2563eb;
+  box-shadow: 0 2px 6px rgba(15, 23, 42, 0.08);
 }
 
 .candidate-control-bar {
-  background-color: var(--card-bg);
-  border: 1px solid var(--brand-border);
-  border-radius: 16px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  box-shadow: 0 2px 8px rgba(15, 23, 42, 0.03);
+}
+
+.filter-pills-row {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.btn-filter-pill {
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  color: #475569;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-filter-pill:hover {
+  background: #f1f5f9;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.btn-filter-pill.active {
+  background: #2563eb;
+  color: #ffffff;
+  border-color: #2563eb;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
 }

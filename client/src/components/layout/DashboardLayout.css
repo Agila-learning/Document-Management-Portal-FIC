@@ -1,12 +1,18 @@
 .layout-wrapper {
   background-color: var(--brand-bg);
   position: relative;
-  overflow-x: hidden;
+  width: 100%;
+  height: 100vh;
+  overflow: hidden;
 }
 
 .main-viewport {
   transition: all 0.3s ease;
   width: 100%;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
 /* Offset main content by sidebar width on desktop */
@@ -19,10 +25,14 @@
 
 .main-content {
   flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding-bottom: 2rem;
+  scroll-behavior: smooth;
 }
 
 .content-inner {
-  max-width: 1440px;
+  max-width: 1560px;
   width: 100%;
 }
 

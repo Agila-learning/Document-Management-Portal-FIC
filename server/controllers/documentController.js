@@ -1,9 +1,11 @@
 const Document = require('../models/Document');
+const Candidate = require('../models/Candidate');
 const ActivityLog = require('../models/ActivityLog');
 const path = require('path');
 const fs = require('fs');
 const bcrypt = require('bcryptjs');
 const { cloudinary } = require('../config/cloudinary');
+const { sendCandidateDocumentSubmissionEmail } = require('../utils/emailService');
 
 // @desc    Upload a document
 // @route   POST /api/documents/upload
@@ -17,21 +19,26 @@ exports.uploadDocument = async (req, res) => {
 
         const { title, category, description, tags, candidateId, companyName, clientName, confidentiality, expiryDate, password } = req.body;
 
+        const isCloudinary = req.file.path && (req.file.path.startsWith('http://') || req.file.path.startsWith('https://'));
+        const resolvedFilePath = isCloudinary 
+            ? req.file.path 
+            : `uploads/${path.relative(path.join(__dirname, '..', 'uploads'), req.file.path).replace(/\\/g, '/')}`;
+
         const docData = {
             title: title || req.file.originalname,
-            category,
+            category: category || (candidateId ? 'Candidate Documents' : 'Miscellaneous'),
             description,
-            filePath: `uploads/${path.relative(path.join(__dirname, '..', 'uploads'), req.file.path).replace(/\\/g, '/')}`,
+            filePath: resolvedFilePath,
             cloudinaryPublicId: req.file.filename, // Cloudinary public_id (or multer filename)
             fileType: path.extname(req.file.originalname),
             fileSize: req.file.size,
-            tags: tags ? tags.split(',').map(tag => tag.trim()) : [],
+            tags: tags ? (Array.isArray(tags) ? tags : tags.split(',').map(tag => tag.trim())) : [],
             uploadedBy: req.user._id,
             candidate: candidateId || null,
             employee: req.body.employeeId || null,
-            companyName,
+            companyName: companyName || 'Forge India Connect',
             clientName,
-            confidentiality,
+            confidentiality: confidentiality || 'Internal',
             expiryDate: expiryDate && expiryDate !== '' ? new Date(expiryDate) : undefined
         };
 
@@ -44,13 +51,48 @@ exports.uploadDocument = async (req, res) => {
 
         const document = await Document.create(docData);
 
+        // If uploaded for a candidate, link to candidate profile and record submission
+        if (candidateId) {
+            try {
+                const candidate = await Candidate.findById(candidateId);
+                if (candidate) {
+                    candidate.documents.push(document._id);
+                    candidate.submittedDocumentsList.push({
+                        name: document.title,
+                        documentType: document.category || 'Candidate Documents',
+                        submittedAt: new Date(),
+                        documentId: document._id,
+                        status: 'Submitted'
+                    });
+                    candidate.submittedDate = new Date();
+                    await candidate.save();
+
+                    // Send acknowledgement email if candidate has email
+                    if (candidate.email) {
+                        sendCandidateDocumentSubmissionEmail({
+                            to: candidate.email,
+                            candidateName: candidate.fullName,
+                            processName: candidate.processName,
+                            hrName: candidate.hrName,
+                            submittedDate: candidate.submittedDate,
+                            documentsList: candidate.submittedDocumentsList,
+                            collectionStatus: candidate.collectionStatus,
+                            missingDocuments: candidate.missingDocuments || []
+                        }).catch(err => console.error('Error sending upload ack mail:', err));
+                    }
+                }
+            } catch (candErr) {
+                console.error('Failed to link document to candidate:', candErr);
+            }
+        }
+
         // Log Activity
         await ActivityLog.create({
             user: req.user._id,
             action: 'UPLOAD',
             targetType: 'Document',
             targetId: document._id,
-            details: `Uploaded document: ${document.title}`,
+            details: `Uploaded document: ${document.title}${candidateId ? ` for candidate ID: ${candidateId}` : ''}`,
             ipAddress: req.ip
         });
 

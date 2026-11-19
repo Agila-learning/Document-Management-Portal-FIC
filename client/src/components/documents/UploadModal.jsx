@@ -3,7 +3,7 @@ import { FiX, FiUploadCloud, FiFile, FiCheck, FiLoader, FiInfo, FiLock, FiUnlock
 import api from '../../utils/api';
 import './UploadModal.css';
 
-const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId }) => {
+const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId, candidateId, candidateName }) => {
   const [file, setFile] = useState(null);
   const [metadata, setMetadata] = useState({
     title: '',
@@ -24,6 +24,20 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId }) => {
     'MOU', 'NOC', 'SLA', 'Offer Letters', 'HR Documents', 
     'Legal Documents', 'Posters', 'Candidate Documents', 'Employee Documents', 
     'Client Documents', 'Miscellaneous'
+  ];
+
+  const candidateDocPresets = [
+    '10th Marksheet',
+    '11th Marksheet',
+    '12th Marksheet',
+    'UG Certificate',
+    'PG Certificate',
+    'Consolidated Marksheet',
+    'Semester Marksheet',
+    'Aadhar Card',
+    'PAN Card',
+    'Resume / CV',
+    'Relieving / Experience Letter'
   ];
 
   const handleFileChange = (e) => {
@@ -49,6 +63,9 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId }) => {
     if (employeeId) {
       formData.append('employeeId', employeeId);
       formData.append('category', 'Employee Documents'); // Auto-set for employee uploads
+    } else if (candidateId) {
+      formData.append('candidateId', candidateId);
+      formData.append('category', metadata.category || 'Candidate Documents');
     } else {
       formData.append('category', metadata.category);
     }
@@ -163,6 +180,34 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId }) => {
 
             {/* Form Grid */}
             <div className="row g-3">
+              {candidateId && (
+                <div className="col-12">
+                  <div className="form-group-custom bg-light p-2 rounded-2 border">
+                    <label className="small fw-bold text-primary mb-1">
+                      Choose Standard Document Preset for {candidateName || 'Candidate'}:
+                    </label>
+                    <select
+                      className="form-control-custom form-control-sm w-100"
+                      onChange={(e) => {
+                        if (e.target.value) {
+                          setMetadata({
+                            ...metadata,
+                            title: e.target.value,
+                            category: 'Candidate Documents'
+                          });
+                        }
+                      }}
+                      defaultValue=""
+                    >
+                      <option value="" disabled>-- Select Document Preset --</option>
+                      {candidateDocPresets.map(preset => (
+                        <option key={preset} value={preset}>{preset}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              )}
+
               <div className="col-12 col-md-6">
                 <div className="form-group-custom">
                   <label>Document Title</label>
@@ -170,7 +215,7 @@ const UploadModal = ({ isOpen, onClose, onUploadSuccess, employeeId }) => {
                     type="text" 
                     value={metadata.title} 
                     onChange={e => setMetadata({...metadata, title: e.target.value})}
-                    placeholder="E.g. Candidate_Passport_John"
+                    placeholder="E.g. Candidate_10th_Marksheet"
                     className="form-control-custom w-100"
                     required
                   />
