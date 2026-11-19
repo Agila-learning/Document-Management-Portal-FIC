@@ -200,7 +200,7 @@ exports.updateDocument = async (req, res) => {
 
 // @desc    Soft delete document (Move to recycle bin / archive)
 // @route   DELETE /api/documents/:id
-// @access  Private (Admin, Manager)
+// @access  Private (Admin, HR, Document Manager)
 exports.deleteDocument = async (req, res) => {
     try {
         const document = await Document.findById(req.params.id);
@@ -209,8 +209,8 @@ exports.deleteDocument = async (req, res) => {
             return res.status(404).json({ message: 'Document not found' });
         }
 
-        document.status = 'Deleted'; // Soft delete
-        await document.save();
+        // Use findByIdAndUpdate to ensure atomic update and avoid schema validation failure on legacy fields
+        await Document.findByIdAndUpdate(req.params.id, { status: 'Deleted' });
 
         // Log Activity
         await ActivityLog.create({
@@ -222,7 +222,63 @@ exports.deleteDocument = async (req, res) => {
             ipAddress: req.ip
         });
 
-        res.json({ message: 'Document moved to recycle bin' });
+        res.json({ success: true, message: 'Document moved to recycle bin' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Update document status / restore document
+// @route   PATCH /api/documents/:id/status
+// @access  Private (Admin, HR, Document Manager)
+exports.updateDocumentStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const document = await Document.findById(req.params.id);
+
+        if (!document) {
+            return res.status(404).json({ message: 'Document not found' });
+        }
+
+        const newStatus = status || 'Active';
+        await Document.findByIdAndUpdate(req.params.id, { status: newStatus });
+
+        await ActivityLog.create({
+            user: req.user._id,
+            action: newStatus === 'Active' ? 'RESTORE' : 'EDIT',
+            targetType: 'Document',
+            targetId: document._id,
+            details: `Updated document status to ${newStatus}: ${document.title}`,
+            ipAddress: req.ip
+        });
+
+        res.json({ success: true, message: `Document status updated to ${newStatus}` });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+// @desc    Permanently delete all trash documents
+// @route   DELETE /api/documents/permanent/all
+// @access  Private (Admin, HR)
+exports.purgeAllDeletedDocuments = async (req, res) => {
+    try {
+        const deletedDocs = await Document.find({ status: 'Deleted' });
+        for (const doc of deletedDocs) {
+            if (doc.cloudinaryPublicId && doc.filePath && doc.filePath.startsWith('http')) {
+                try { await cloudinary.uploader.destroy(doc.cloudinaryPublicId); } catch (e) {}
+            } else if (doc.filePath) {
+                const relativePath = doc.filePath.startsWith('uploads/') 
+                    ? doc.filePath.replace('uploads/', '') 
+                    : doc.filePath;
+                const filePath = path.join(__dirname, '..', 'uploads', relativePath);
+                if (fs.existsSync(filePath)) {
+                    try { fs.unlinkSync(filePath); } catch (e) {}
+                }
+            }
+        }
+        await Document.deleteMany({ status: 'Deleted' });
+        res.json({ success: true, message: 'All deleted documents permanently purged' });
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -62,10 +62,14 @@ const Documents = () => {
   const handleDelete = async (id) => {
     if (!window.confirm('Move this document to the Recycle Bin?')) return;
     try {
+      // Optimistically remove from list immediately for instant UI feedback
+      setDocuments(prev => prev.filter(doc => doc._id !== id));
       await api.delete(`/documents/${id}`);
-      fetchDocuments();
+      await fetchDocuments();
     } catch (error) {
       console.error('Delete failed:', error);
+      alert(error.response?.data?.message || 'Failed to delete document. Please verify your permissions.');
+      await fetchDocuments();
     }
   };
 
@@ -117,7 +121,7 @@ const Documents = () => {
   const categories = [
     'All', 'MOU', 'NOC', 'SLA', 'Offer Letters', 'HR Documents', 
     'Legal Documents', 'Posters', 'Candidate Documents', 
-    'Client Documents', 'Miscellaneous'
+    'Employee Documents', 'Client Documents', 'Miscellaneous'
   ];
 
   return (

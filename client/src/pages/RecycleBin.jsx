@@ -31,30 +31,39 @@ const RecycleBin = () => {
   const handleRestore = async (id) => {
     if (!window.confirm('Restore this document to active status?')) return;
     try {
+      setDocuments(prev => prev.filter(doc => doc._id !== id));
       await api.patch(`/documents/${id}/status`, { status: 'Active' });
-      fetchDeletedDocuments();
+      await fetchDeletedDocuments();
     } catch (error) {
       console.error('Restore failed:', error);
+      alert(error.response?.data?.message || 'Failed to restore document');
+      await fetchDeletedDocuments();
     }
   };
 
   const handlePermanentDelete = async (id) => {
     if (!window.confirm('WARNING: This will permanently delete the file from the server. This action cannot be undone. Continue?')) return;
     try {
+      setDocuments(prev => prev.filter(doc => doc._id !== id));
       await api.delete(`/documents/${id}/permanent`);
-      fetchDeletedDocuments();
+      await fetchDeletedDocuments();
     } catch (error) {
       console.error('Purge failed:', error);
+      alert(error.response?.data?.message || 'Failed to delete permanently');
+      await fetchDeletedDocuments();
     }
   };
 
   const handlePurgeAll = async () => {
     if (!window.confirm('DANGER: This will permanently delete ALL items in the recycle bin. Continue?')) return;
     try {
+      setDocuments([]);
       await api.delete('/documents/permanent/all');
-      fetchDeletedDocuments();
+      await fetchDeletedDocuments();
     } catch (error) {
       console.error('Bulk purge failed:', error);
+      alert(error.response?.data?.message || 'Failed to empty recycle bin');
+      await fetchDeletedDocuments();
     }
   };
 

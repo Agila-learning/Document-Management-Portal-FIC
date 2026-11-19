@@ -107,7 +107,10 @@ const DocumentTable = ({ documents, onPreview, onEdit, onDelete, onDownload }) =
                     <FiEdit2 />
                   </button>
                   <button 
-                    onClick={() => onDelete(doc._id)} 
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(doc._id);
+                    }} 
                     className="btn btn-action-icon delete"
                     title="Move to Recycle Bin"
                   >
